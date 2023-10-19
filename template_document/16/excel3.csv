@@ -1,0 +1,22 @@
+Mega Process,Process,Process,Process,Process,Activity,Activity,Activity,Start Date,Finish Date,Assigned Person,Resources,Dependency,Template Reference
+Dept. Familiarization ,,,,,,,,,,,,,
+,p1,,,,testing,,,7-Sep-16,9/7/2016,Ankush,"comput, laptop, ",,ref1
+,,p 1.1,,,testing1,,,9/7/2016,9/7/2016,Vinod,desktop,,ref2
+,,,p 1.1.1,,test,,,9/7/2016,9/7/2016,Sachin,CD,,ref3
+,,,,p 1.1.1.1,testing3,,,9/7/2016,9/7/2016,Dilip,HDISK,,ref4
+,,,,,,testing 5,,9/7/2016,9/7/2016,Deepak,"comput, laptop, ",,ref5
+,,,,,,,testing 6,9/7/2016,9/7/2016,,CD,,
+,,p 1.2,,,testing 7,,,,,,,,
+,,,p 1.2.1,,,,,,,,,,
+,,,,p 2.1.1.1,testing4,,,9/7/2016,9/7/2016,,HDISK,,ref6
+,p2,,,,,,,,,,,,
+,,,,,,,,,,,,,
+,,,,,,,,,,,,,
+,,,,,,,,,,,,,
+,,,,,,,,,,,,,
+,,,,,,,,,,,,,
+,,,,,,,,,,,,,
+,,,,,,,,,,,,,
+,,,,,,,,,,,,,
+RMHS,,,,,,,,,,,,,
+,WAGON TIPPLER,,,,,,,,,,,,

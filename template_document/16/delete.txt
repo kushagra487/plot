@@ -1,0 +1,2 @@
+DELETE mega_process, process,activity FROM mega_process INNER JOIN process INNER JOIN activity
+WHERE mega_process.mp_id=process.mp_id AND process.pid=activity.process_id AND mega_process.project_id=103;
