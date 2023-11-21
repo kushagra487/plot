@@ -2,6 +2,10 @@
 //print_r($project_details);
 ini_set("memory_limit","1000M");
 ?>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
 <div class="right_col" role="main">
 <h3 class="title text-uppercase"> <?php echo $project_details['project_name']; ?> <img src="<?php echo base_url()?>project_uploads/<?php echo $project_details['project_logo']?>" style="width:50px;height:50px;"> </h3>
 		    			<div class="col-md-12 col-sm-12 col-xs-12">
@@ -111,27 +115,41 @@ ini_set("memory_limit","1000M");
 		for($i=0;$i<$result_depth_process;$i++){
 		?>
         
-		<th class="cell13"><textarea rows="1" cols="10" name="cell[]">Process</textarea><div class="mtn_togg"><span class="toggle_insert"><i class="fa fa-angle-right"></i></span>
-                                    <span class="hover_toggle"><small class="insert_col">Insert</small><small class="delete_col">Delete</small></span></div></th>
+		<th class="cell13"><textarea rows="1" cols="10" name="cell[]">Process</textarea>
+    <!-- <div class="mtn_togg"><span class="toggle_insert"><i class="fa fa-angle-right"></i></span>
+                                    <span class="hover_toggle"><small class="insert_col">Insert</small><small class="delete_col">Delete</small></span></div> -->
+                                  </th>
         <?php } for($i=0;$i<$result_depth_activity;$i++){?>
         <th class="cell13"><textarea rows="1" cols="10"  name="cell[]">Activity</textarea>
-        <div class="mtn_togg"><span class="toggle_insert"><i class="fa fa-angle-right"></i></span>
-                                    <span class="hover_toggle"><small class="insert_col">Insert</small><small class="delete_col">Delete</small></span></div>
+        
         </th>
         <?php } ?>
+        <th class="cell13"><textarea rows="1" cols="10">UOM</textarea></th>
 		<th class="cell13"><textarea rows="1" cols="10">Planned Quantity</textarea></th>
 		<th class="cell13"><textarea rows="1" cols="10">Actual Quantity</textarea></th>
-        <th class="cell13"><textarea rows="1" cols="10">Start Date</textarea></th>
-        <th class="cell13"><textarea rows="1" cols="10">Finish Date</textarea></th>
+        <th class="cell13"><textarea rows="1" cols="10">Start Date & Time</textarea></th>
+        <th class="cell13"><textarea rows="1" cols="10" style="width:138px !important;">Finish Date & Time</textarea></th>
         <th class="cell13"><textarea rows="1" cols="10">Assigned Person</textarea></th>
         <th class="cell13"><textarea rows="1" cols="10">Resources</textarea></th>
-         <th><textarea name="col[]" cols="10" rows="1"> Dependency</textarea></th>
-        <th class="cell13"><textarea rows="1" cols="10">Team Name</textarea></th>
-        <th class="cell13"><textarea rows="1" cols="10">Template Document</textarea></th>
-        <th class="cell13"><textarea rows="1" cols="10">Status</textarea></th>
+         <th><textarea name="col[]" cols="10" rows="1"> Dependency</textarea>
+         <div class="mtn_togg"><span class="toggle_insert"><i class="fa fa-angle-right"></i></span>
+                                    <span class="hover_toggle"><small class="insert_col">Insert</small><small class="delete_col">Delete</small></span></div>
+                                  </th>
+        <th class="cell13"><textarea rows="1" cols="10">Team Name</textarea>
+        <div class="mtn_togg"><span class="toggle_insert"><i class="fa fa-angle-right"></i></span>
+                                    <span class="hover_toggle"><small class="insert_col">Insert</small><small class="delete_col">Delete</small></span></div>
+                                  </th>
+        <th class="cell13"><textarea rows="1" cols="10">Template Document</textarea>     
+        <div class="mtn_togg"><span class="toggle_insert"><i class="fa fa-angle-right"></i></span>
+                                    <span class="hover_toggle"><small class="insert_col">Insert</small><small class="delete_col">Delete</small></span></div>
+                                  </th>
+        <th class="cell13"><textarea rows="1" cols="10">Status</textarea>
+        <div class="mtn_togg"><span class="toggle_insert"><i class="fa fa-angle-right"></i></span>
+                                    <span class="hover_toggle"><small class="insert_col">Insert</small><small class="delete_col">Delete</small></span></div>
+      </th>
       	</tr>
          </thead>
-         <tbody>   
+         <tbody id="table">   
             <?php
 			if($_POST['search_mp']!=''){
 			$query_append="AND mp_id ='".$_POST['search_mp']."'";	
@@ -166,6 +184,7 @@ ini_set("memory_limit","1000M");
             
             <td class="disableChild"><textarea class="activity_area"></textarea></td>
             <?php }?>
+            <td> <input type="text"  name="uom[]"  ></td>
 			<td> <input type="text"  name="planned_quantity[]"  ></td>
 			<td> <input type="text"  name="actually_quantity[]" ></td>
             <td> <input type="text"  name="start_date[]" class="stdate" placeholder="dd/mm/YYYY"  ></td>

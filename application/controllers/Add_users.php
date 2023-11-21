@@ -38,7 +38,8 @@
 						$config['allowed_types'] = 'gif|jpg|png|jpeg';
 						$config['overwrite'] = TRUE;
 						$image_name = $_FILES['image']['name'];
-						$img_name = str_replace(' ','_', $image_name);					
+						$img_name = str_replace(' ','_', $image_name);	
+						//echo $img_name;die;				
 						$config['file_name'] = $img_name;
 						$this->load->library('upload', $config);
 						if (!$this->upload->do_upload('image')) {

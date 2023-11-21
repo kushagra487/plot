@@ -1,10 +1,19 @@
 <div class="right_col odif_page" role="main">
- <h3 class="title text-uppercase">Job Card In - ODIF Report <small>(<?php echo date('dS F Y');?>)</small></h3>
+ <h3 class="title text-uppercase">Job Card <!--In - ODIF Report --> <small>(<?php echo date('dS F Y');?>)</small></h3>
  <span class="pull-right"><a href="<?php echo base_url()?>wbs_list/index/<?php echo $this->uri->segment('3')?>">Back</a></span>
 	<div>
 	<div class="clearfix"></div>
 		<div class="row">
         
+        <div class="col-md-6 col-xs-6">
+        <div class="curve_btn green_btn">
+                    <a href="<?php echo base_url()?>odif/jobCardExcelDownload?projectid=<?php echo $this->uri->segment('3')?>">Download Job Card</a>
+                  </div>
+        </div>
+        
+        
+        </div>
+        </div>
         <div class="col-sm-4 col-xs-12">
         	<div class="logo_comp">
             <figure>
@@ -45,7 +54,9 @@
 					<ul class="nav navbar-right panel_toolbox wbs-button pro_page">
                     <li>
                     <div class="curve_btn green_btn">
-          <a href="#" class="share btn-lg" title="share" id="import_wbs" data-toggle="modal" data-target="#myModal"><i class="fa fa-share-alt" aria-hidden="true"></i> Share</a></div></li>
+          <a href="#" class="share btn-lg" title="share" id="import_wbs" data-toggle="modal" data-target="#myModal">
+            <i class="fa fa-share-alt" aria-hidden="true"></i> Share</a></div>
+          </li>
                     </ul>
 	<p class="clearfix"></p>					
 
@@ -64,11 +75,12 @@
                                     <th>Mega Process</th>
                                      <th>Process</th>
                                     <th>Activity</th>
+                                    <th>UOM</th>
                                     <th>Planned Quantity</th>
                                     <th>Actual Quantity</th>
                                     <th>Assigned Person</th>
-                                    <th>Start Date</th>
-									<th>Finish Date</th>
+                                    <th>Start Date & Time</th>
+									<th>Finish Date & Time</th>
 									<th class="col-xs-1">Status</th>
                                     <th class="col-xs-1">Comments</th>
 								</tr>
@@ -80,7 +92,7 @@
 									
 									
 				$sl=0; foreach($odif as $value){	
-					$sl++; 				
+								
 					
 			if($value['dependent_on']!=''){
 
@@ -105,21 +117,29 @@
        $pq = $value['planned_quantity'];
        $aq = $value['actually_quantity'];
        $taq = $value['temp_actual_quantity'];
+       $job_card_sql = "SELECT * FROM job_card WHERE activity_id='".$value['activity_id']."'";
+       $job_card = $this->db->query($job_card_sql)->row(); 
+       if($job_card) { 
+        $value['planned_quantity']  = $job_card->planned_quantity;
+        $value['actually_quantity'] = $job_card->actually_quantity;
+        if($value['planned_quantity'] <= 0){
+          continue;
+        }
+       }
+       $sl++; 	
+       $arr = explode(" ", $value['start_date']);
+      // $value['start_date'] =  $arr[0];
+       //echo $value['start_date'];
+      //  echo date('d/m/Y');
       ?>
 						<tr>
 												    <td><?php echo $sl;?></td>
                                                     <td><?php echo $value['mp_name'];?></td>
                                                     <td><?php echo $value['process_name'];?></td>
                                                     <td><?php echo $value['activity_name'];?></td>
-                                                    <td><input name="planned_quantity[<?php echo $sl-1; ?>]" id="planned_quantity" value="<?php echo $value['planned_quantity']- $value['temp_actual_quantity']?>" type="text" disabled></td>
-													                          <td><input name="actually_quantity[<?php echo $sl-1; ?>]" id="actually_quantity" value="<?php
-                                                    if($value['planned_quantity']== $value['temp_actual_quantity']){
-                                                      echo "0";
-                                                    }
-                                                    else {
-                                                    echo $value['actually_quantity'];
-                                                  }
-                                                  ?>" type="text">
+                                                    <td><?php echo $value['uom'];?></td>
+                                                    <td><input name="planned_quantity[<?php echo $sl-1; ?>]" id="planned_quantity" value="<?=$value['planned_quantity']?>" type="text" disabled></td>
+													                          <td><input name="actually_quantity[<?php echo $sl-1; ?>]" id="actually_quantity" value="<?=$value['actually_quantity']?>" type="text" <?php if((date('d/m/Y')==$arr[0]) && ($project_details['daterange'] > date('H:i'))) { echo 'disabled'; } ?>>
                                                     <!-- <input name="temp_actual_quantity[<?php echo $sl-1; ?>]" id="temp_actual_quantity" value="<?php echo $value['temp_actual_quantity']?>" type="hidden"> --> 
 
 <?php // echo $value['temp_actual_quantity']?></td>
@@ -128,16 +148,16 @@
 													<td><?php echo $value['finish_date'];?></td>
 												<td>
                                                  <?php if($value['activity_name']!=''){?>
-                                               <select name="odif_status[]" id="odif_status" class="form-control status" tabindex="-1" onChange="check_dependency(<?php echo $value['activity_id'];?>)" <?php echo $disabled_class?>>
+                                               <select name="odif_status[]" id="odif_status" class="form-control status" tabindex="-1" onChange="check_dependency(<?php echo $value['activity_id'];?>)" <?php echo $disabled_class?>  <?php if((date('d/m/Y')==$arr[0]) && ($project_details['daterange'] >date('H:i'))) { echo 'disabled'; } ?>>
                          <option  value="">Select</option>                                 
                          <option value="1" <?php if($value['activity_status']==1) echo "selected";?>>1</option>
                          <option value="0" <?php if($value['activity_status']==0) echo "selected";?>>0</option>
                           </select>
 						
                                                         <?php } ?>
-                                                        <input type="hidden" id="odifid" name="odif_id[<?php echo $sl-1; ?>]" value="<?php echo $value['activity_id'];?>"/>
+                                                        <input type="hidden" id="odifid" name="odif_id[<?php echo $sl-1; ?>]" value="<?php echo $value['activity_id'];?>" <?php if((date('d/m/Y')==$arr[0]) && ($project_details['daterange'] >date('H:i'))) { echo 'disabled'; } ?>/>
 													</td>
-                                                    <td><input name="odif_comment[<?php echo $sl-1; ?>]" id="odif_comments" value="<?php echo $value['comments']?>" type="text" <?php echo $disabled_class1?>></td>
+                                                    <td><input name="odif_comment[<?php echo $sl-1; ?>]" id="odif_comments" value="<?php echo $value['comments']?>" type="text" <?php echo $disabled_class1?> <?php if((date('d/m/Y')==$arr[0]) && ($project_details['daterange'] >date('H:i'))) { echo 'disabled'; } ?>></td>
 												</tr>
 								  <?php } ?>
 								

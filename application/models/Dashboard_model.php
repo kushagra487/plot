@@ -21,9 +21,9 @@ public function view_details($user_id) {
  public function get_project_data($start_date,$finish_date){
 	
 	if($start_date!='' && $finish_date!=''){	 
-		$sql="SELECT * FROM project_name p INNER JOIN mega_process mp  ON  p.project_id=mp.project_id WHERE p.start_date >='$start_date' AND p.end_date  <='$finish_date' GROUP BY p.project_id ORDER BY p.project_name ASC";
+		$sql="SELECT p.* FROM project_name p INNER JOIN mega_process mp  ON  p.project_id=mp.project_id WHERE p.start_date >='$start_date' AND p.end_date  <='$finish_date' GROUP BY p.project_id ORDER BY p.project_name ASC";
 	}else{
-		$sql="SELECT * FROM project_name p INNER JOIN mega_process mp  ON  p.project_id=mp.project_id GROUP BY p.project_id ORDER BY p.project_name ASC";	
+		$sql="SELECT p.* FROM project_name p INNER JOIN mega_process mp  ON  p.project_id=mp.project_id GROUP BY p.project_id ORDER BY p.project_name ASC";	
 	}
 	$res=$this->db->query($sql);
 	return $res->result_array();	 
@@ -33,9 +33,9 @@ public function view_details($user_id) {
  public function get_project_data_member($start_date,$finish_date,$memberid){
 	
 	if($start_date!='' && $finish_date!=''){	 
-		$sql="SELECT * FROM project_name p INNER JOIN mega_process mp  ON  p.project_id=mp.project_id INNER JOIN tm_project tmp ON tmp.project_id=p.project_id AND tmp.tm_list='".$memberid."' WHERE p.start_date >='$start_date' AND p.end_date  <='$finish_date' GROUP BY p.project_id ORDER BY p.project_name ASC";
+		$sql="SELECT p.* FROM project_name p INNER JOIN mega_process mp  ON  p.project_id=mp.project_id INNER JOIN tm_project tmp ON tmp.project_id=p.project_id AND tmp.tm_list='".$memberid."' WHERE p.start_date >='$start_date' AND p.end_date  <='$finish_date' GROUP BY p.project_id ORDER BY p.project_name ASC";
 	}else{
-		$sql="SELECT * FROM project_name p INNER JOIN mega_process mp  ON  p.project_id=mp.project_id INNER JOIN tm_project tmp ON tmp.project_id=p.project_id AND tmp.tm_list='".$memberid."' GROUP BY p.project_id ORDER BY p.project_name ASC";	
+		$sql="SELECT p.* FROM project_name p INNER JOIN mega_process mp  ON  p.project_id=mp.project_id INNER JOIN tm_project tmp ON tmp.project_id=p.project_id AND tmp.tm_list='".$memberid."' GROUP BY p.project_id ORDER BY p.project_name ASC";	
 	}
 	$res=$this->db->query($sql);
 	return $res->result_array();	 
@@ -45,9 +45,9 @@ public function view_details($user_id) {
   public function get_project_data_pm($start_date,$finish_date,$memberid){
 	
 	if($start_date!='' && $finish_date!=''){	 
-		$sql="SELECT * FROM project_name p INNER JOIN mega_process mp  ON  p.project_id=mp.project_id INNER JOIN pm_project tmp ON tmp.project_id=p.project_id AND tmp.pm_list='".$memberid."' WHERE p.start_date >='$start_date' AND p.end_date  <='$finish_date' GROUP BY p.project_id ORDER BY p.project_name ASC";
+		$sql="SELECT p.* FROM project_name p INNER JOIN mega_process mp  ON  p.project_id=mp.project_id INNER JOIN pm_project tmp ON tmp.project_id=p.project_id AND tmp.pm_list='".$memberid."' WHERE p.start_date >='$start_date' AND p.end_date  <='$finish_date' GROUP BY p.project_id ORDER BY p.project_name ASC";
 	}else{
-		 $sql="SELECT * FROM project_name p INNER JOIN mega_process mp  ON  p.project_id=mp.project_id INNER JOIN pm_project tmp ON tmp.project_id=p.project_id AND tmp.pm_list='".$memberid."' GROUP BY p.project_id ORDER BY p.project_name ASC";	
+		 $sql="SELECT p.* FROM project_name p INNER JOIN mega_process mp  ON  p.project_id=mp.project_id INNER JOIN pm_project tmp ON tmp.project_id=p.project_id AND tmp.pm_list='".$memberid."' GROUP BY p.project_id ORDER BY p.project_name ASC";	
 	}
 	$res=$this->db->query($sql);
 	return $res->result_array();	 
@@ -58,9 +58,9 @@ public function view_details($user_id) {
  public function get_project_names($projectid){
 	
 	if($projectid){	 
-		$sql="SELECT * FROM project_name p INNER JOIN mega_process mp  ON  p.project_id=mp.project_id AND p.project_id='".$projectid."' GROUP BY p.project_id ORDER BY p.project_id DESC";
+		$sql="SELECT p.* FROM project_name p INNER JOIN mega_process mp  ON  p.project_id=mp.project_id AND p.project_id='".$projectid."' GROUP BY p.project_id ORDER BY p.project_id DESC";
 	}else{
-		$sql="SELECT * FROM project_name p INNER JOIN mega_process mp  ON  p.project_id=mp.project_id GROUP BY p.project_id  ORDER BY p.project_id DESC";	
+		$sql="SELECT p.* FROM project_name p INNER JOIN mega_process mp  ON  p.project_id=mp.project_id GROUP BY p.project_id  ORDER BY p.project_id DESC";	
 	}
 	$res=$this->db->query($sql);
 	$all_projects='';
@@ -84,9 +84,9 @@ public function view_details($user_id) {
   public function get_project_names1($projectid){
 	
 	if($projectid){	 
-		$sql="SELECT * FROM project_name p INNER JOIN mega_process mp  ON  p.project_id=mp.project_id AND p.project_id='".$projectid."' GROUP BY p.project_id ORDER BY p.project_id DESC";
+		$sql="SELECT p.* FROM project_name p INNER JOIN mega_process mp  ON  p.project_id=mp.project_id AND p.project_id='".$projectid."' GROUP BY p.project_id ORDER BY p.project_id DESC";
 	}else{
-		$sql="SELECT * FROM project_name p INNER JOIN mega_process mp  ON  p.project_id=mp.project_id GROUP BY p.project_id  ORDER BY p.project_id DESC";	
+		$sql="SELECT p.* FROM project_name p INNER JOIN mega_process mp  ON  p.project_id=mp.project_id GROUP BY p.project_id  ORDER BY p.project_id DESC";	
 	}
 	$res=$this->db->query($sql);
 	$all_projects='';
@@ -107,9 +107,9 @@ public function view_details($user_id) {
  public function get_project_names_pm($projectid,$memberid){
 	
 	if($projectid){	 
-		$sql="SELECT * FROM project_name p INNER JOIN mega_process mp  ON  p.project_id=mp.project_id INNER JOIN pm_project tmp ON tmp.project_id=p.project_id AND tmp.pm_list='".$memberid."' AND p.project_id='".$projectid."' GROUP BY p.project_id ORDER BY p.project_id DESC";
+		$sql="SELECT p.* FROM project_name p INNER JOIN mega_process mp  ON  p.project_id=mp.project_id INNER JOIN pm_project tmp ON tmp.project_id=p.project_id AND tmp.pm_list='".$memberid."' AND p.project_id='".$projectid."' GROUP BY p.project_id ORDER BY p.project_id DESC";
 	}else{
-		$sql="SELECT * FROM project_name p INNER JOIN mega_process mp  ON  p.project_id=mp.project_id INNER JOIN pm_project tmp ON tmp.project_id=p.project_id AND tmp.pm_list='".$memberid."' GROUP BY p.project_id  ORDER BY p.project_id DESC";	
+		$sql="SELECT p.* FROM project_name p INNER JOIN mega_process mp  ON  p.project_id=mp.project_id INNER JOIN pm_project tmp ON tmp.project_id=p.project_id AND tmp.pm_list='".$memberid."' GROUP BY p.project_id  ORDER BY p.project_id DESC";	
 	}
 	$res=$this->db->query($sql);
 	$all_projects='';
@@ -129,9 +129,9 @@ public function view_details($user_id) {
   public function get_project_names_pm1($projectid,$memberid){
 	
 	if($projectid){	 
-		$sql="SELECT * FROM project_name p INNER JOIN mega_process mp  ON  p.project_id=mp.project_id INNER JOIN pm_project tmp ON tmp.project_id=p.project_id AND tmp.pm_list='".$memberid."' AND p.project_id='".$projectid."' GROUP BY p.project_id ORDER BY p.project_id DESC";
+		$sql="SELECT p.* FROM project_name p INNER JOIN mega_process mp  ON  p.project_id=mp.project_id INNER JOIN pm_project tmp ON tmp.project_id=p.project_id AND tmp.pm_list='".$memberid."' AND p.project_id='".$projectid."' GROUP BY p.project_id ORDER BY p.project_id DESC";
 	}else{
-		$sql="SELECT * FROM project_name p INNER JOIN mega_process mp  ON  p.project_id=mp.project_id INNER JOIN pm_project tmp ON tmp.project_id=p.project_id AND tmp.pm_list='".$memberid."' GROUP BY p.project_id  ORDER BY p.project_id DESC";	
+		$sql="SELECT p.* FROM project_name p INNER JOIN mega_process mp  ON  p.project_id=mp.project_id INNER JOIN pm_project tmp ON tmp.project_id=p.project_id AND tmp.pm_list='".$memberid."' GROUP BY p.project_id  ORDER BY p.project_id DESC";	
 	}
 	$res=$this->db->query($sql);
 	$all_projects='';
@@ -183,9 +183,9 @@ public function view_details($user_id) {
  public function get_project_names_member($projectid,$memberid){
 	
 	if($projectid){	 
-		$sql="SELECT * FROM project_name p INNER JOIN mega_process mp  ON  p.project_id=mp.project_id INNER JOIN tm_project tmp ON tmp.project_id=p.project_id AND tmp.tm_list='".$memberid."' AND p.project_id='".$projectid."' GROUP BY p.project_id ORDER BY p.project_name DESC";
+		$sql="SELECT p.* FROM project_name p INNER JOIN mega_process mp  ON  p.project_id=mp.project_id INNER JOIN tm_project tmp ON tmp.project_id=p.project_id AND tmp.tm_list='".$memberid."' AND p.project_id='".$projectid."' GROUP BY p.project_id ORDER BY p.project_name DESC";
 	}else{
-		$sql="SELECT * FROM project_name p INNER JOIN mega_process mp  ON  p.project_id=mp.project_id INNER JOIN tm_project tmp ON tmp.project_id=p.project_id AND tmp.tm_list='".$memberid."' GROUP BY p.project_id  ORDER BY p.project_name DESC";	
+		$sql="SELECT p.* FROM project_name p INNER JOIN mega_process mp  ON  p.project_id=mp.project_id INNER JOIN tm_project tmp ON tmp.project_id=p.project_id AND tmp.tm_list='".$memberid."' GROUP BY p.project_id  ORDER BY p.project_name DESC";	
 	}
 	$res=$this->db->query($sql);
 	$all_projects='';
@@ -205,9 +205,9 @@ public function view_details($user_id) {
  public function get_project_names_member1($projectid,$memberid){
 	
 	if($projectid){	 
-		$sql="SELECT * FROM project_name p INNER JOIN mega_process mp  ON  p.project_id=mp.project_id INNER JOIN tm_project tmp ON tmp.project_id=p.project_id AND tmp.tm_list='".$memberid."' AND p.project_id='".$projectid."' GROUP BY p.project_id ORDER BY p.project_name DESC";
+		$sql="SELECT p.* FROM project_name p INNER JOIN mega_process mp  ON  p.project_id=mp.project_id INNER JOIN tm_project tmp ON tmp.project_id=p.project_id AND tmp.tm_list='".$memberid."' AND p.project_id='".$projectid."' GROUP BY p.project_id ORDER BY p.project_name DESC";
 	}else{
-		$sql="SELECT * FROM project_name p INNER JOIN mega_process mp  ON  p.project_id=mp.project_id INNER JOIN tm_project tmp ON tmp.project_id=p.project_id AND tmp.tm_list='".$memberid."' GROUP BY p.project_id  ORDER BY p.project_name DESC";	
+		$sql="SELECT p.* FROM project_name p INNER JOIN mega_process mp  ON  p.project_id=mp.project_id INNER JOIN tm_project tmp ON tmp.project_id=p.project_id AND tmp.tm_list='".$memberid."' GROUP BY p.project_id  ORDER BY p.project_name DESC";	
 	}
 	$res=$this->db->query($sql);
 	$all_projects='';
@@ -354,10 +354,10 @@ public function view_details($user_id) {
 	}
 	
 	if($start_date!='' && $finish_date!=''){	
-	 $sql="SELECT * FROM activity a INNER JOIN login u ON a.assigned_person=u.user_id  WHERE a.status=0 AND str_to_date(start_date,'%d/%m/%Y') BETWEEN '$start_date' AND '$finish_date' OR  str_to_date(finish_date,'%d/%m/%Y') BETWEEN '$start_date' AND '$finish_date' ".$filter2."  ".$filter." GROUP BY assigned_person  order BY assigned_person";
+	 $sql="SELECT a.* FROM activity a INNER JOIN login u ON a.assigned_person=u.user_id  WHERE a.status=0 AND str_to_date(start_date,'%d/%m/%Y') BETWEEN '$start_date' AND '$finish_date' OR  str_to_date(finish_date,'%d/%m/%Y') BETWEEN '$start_date' AND '$finish_date' ".$filter2."  ".$filter." order BY a.assigned_person";
 	}
 	else{
-		$sql="SELECT * FROM activity a INNER JOIN login u ON a.assigned_person=u.user_id AND a.status=0 ".$filter2."  ".$filter." GROUP BY assigned_person order BY assigned_person  ";	
+		$sql="SELECT a.* FROM activity a INNER JOIN login u ON a.assigned_person=u.user_id AND a.status=0 ".$filter2."  ".$filter." order BY a.assigned_person  ";	
 	}
 	$res=$this->db->query($sql);
 	

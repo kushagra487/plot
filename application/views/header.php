@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+<?php
+error_reporting(0);
+?><!DOCTYPE html>
 <html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -37,6 +39,7 @@
     
     <link rel="stylesheet" href="<?= base_url();?>vendors/assets/css/last_custom.css">
      <link href="<?= base_url();?>vendors/assets/css/select/bootstrap-multiselect.css" rel="stylesheet">
+     <script src="<?= base_url();?>vendors/jquery/dist/jquery.min.js"></script>
 </head>
 <body class="nav-sm">
   
@@ -94,6 +97,11 @@
                         </div>
                         <!-- #menu -->
                         <ul id="menu" class="bg-dark dker">
+                                <li class="">
+                                    <a href="<?= base_url()?>dashboards/">
+                                      <i class="fa fa-dashboard ft-18"></i><span class="link-title"> Dashboard</span>
+                                    </a>
+                                  </li>
                                   <li class="">
                                     <a href="<?= base_url()?>dashboard/">
                                       <i class="fa fa-line-chart ft-18"></i><span class="link-title"> Performance</span>
@@ -105,6 +113,7 @@
                                       <span class="link-title"> My Project</span>
                                     </a>
                                   </li>
+                                  
                                   <?php if($this->session->userdata['role']=='Editor' || $this->session->userdata['role']=='Admin' || $this->session->userdata['role']=='Project Manager') {?>
                                    <li>
                                         <a href="<?= base_url();?>add_users/view_users/">
@@ -112,7 +121,18 @@
                                       </li>
                                       <?php } ?>
                                                              
-                                  
+                                <li class="">
+                                    <a  href="<?= base_url();?>delay_management">
+                                      <i class="fa fa-hourglass-end ft-18"></i>
+                                      <span class="link-title"> Delay Management</span>
+                                    </a>
+                                  </li>
+                                  <li class="">
+                                    <a  href="<?= base_url();?>create_audit">
+                                      <i class="fa fa-search ft-18"></i>
+                                      <span class="link-title"> Create Audit</span>
+                                    </a>
+                                  </li>
                                 </ul>
                         <!-- /#menu -->
                     </div>

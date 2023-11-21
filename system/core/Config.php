@@ -99,8 +99,9 @@ class CI_Config {
 					$server_addr = $_SERVER['SERVER_ADDR'];
 				}
 
-				$base_url = (is_https() ? 'https' : 'http').'://'.$server_addr
-					.substr($_SERVER['SCRIPT_NAME'], 0, strpos($_SERVER['SCRIPT_NAME'], basename($_SERVER['SCRIPT_FILENAME'])));
+				$base_url = (is_https() ? 'http' : 'http').'://'.$server_addr.substr($_SERVER['SCRIPT_NAME'], 0, strpos($_SERVER['SCRIPT_NAME'], basename($_SERVER['SCRIPT_FILENAME'])));
+					// $base_url = "http://".$_SERVER['HTTP_HOST'];
+					// $base_url .= str_replace(basename($_SERVER['SCRIPT_NAME']),"",$_SERVER['SCRIPT_NAME']);
 			}
 			else
 			{

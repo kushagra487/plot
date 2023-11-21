@@ -46,8 +46,10 @@
 								<label class="control-label col-md-3 col-sm-3 col-xs-12">User's Role <span class="required" style="color:red !important;">*</span> </label>
 								<div class="col-md-6 col-sm-6 col-xs-12">
 									<select class="select2_multiple form-control" name="user_role">
+										<?php if($this->session->userdata("role") != "Team Member"){ ?>
 										<option <?php if($user_detail['role'] == 'Editor'){ echo 'selected'; }?> value="Editor">Editor</option>
 										<option <?php if($user_detail['role'] == 'Project Manager'){ echo 'selected'; }?> value="Project Manager">Project Manager</option>
+										<?php } ?>
 										<option <?php if($user_detail['role'] == 'Team Member'){ echo 'selected'; }?> value="Team Member">Team Member</option>
 									</select>
 								</div>

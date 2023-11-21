@@ -81,7 +81,7 @@
       
     </div>
   </div>   
-<script src="<?= base_url();?>vendors/jquery/dist/jquery.min.js"></script>
+
 <script src="<?= base_url();?>vendors/bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="<?= base_url();?>vendors/iCheck/icheck.min.js"></script>-->
 <script src="<?= base_url();?>js/moment/moment.min.js"></script>
@@ -90,6 +90,9 @@
 <script>
 $('[data-toggle="tooltip"]').tooltip();
 </script>
+
+
+
 <script type="text/javascript">
 	
 	function check_dependency(aid){
@@ -172,11 +175,37 @@ $('#end_date').datetimepicker({ format: 'YYYY-MM-DD'});
 
 $('#start_date_activity').datetimepicker({ format: 'DD/MM/YYYY'});
 $('#end_date_activity').datetimepicker({ format: 'DD/MM/YYYY'});
-			
-			
+var disabledTime = $("#daterange").val(); 
+if(disabledTime) {
+	var enabledHours = []; 
+	var disabledHour = parseInt(disabledTime.split(':')[0]); 
+	for (let i = 0; i <  disabledHour; i++) {
+		enabledHours.push(i);
+	} 
+	$('#timestartodif').datetimepicker({
+		format: 'HH:mm', // Use 'HH:mm' for a 24-hour format or 'hh:mm A' for 12-hour format
+		//enabledHours: enabledHours, 
+		ignoreReadonly: true
+	});
+	$("#daterange").val(disabledTime); 	
+}
+
+
+		$(document.body).trigger(".stdate, .endate")
+		$(".stdate, .endate").on('click',function(){
+			$(this).datetimepicker({
+						format: 'DD/MM/YYYY HH:mm:ss'
+					}).datetimepicker( "show" );
+		});
+        // $(".stdate, .endate").datetimepicker({
+        //     format: 'DD/MM/YYYY HH:mm:ss'
+        // });
+     
+
   $('#timestart').datetimepicker({
 			   format: 'HH:mm',  
 	  });
+ 
 $('#datepickerhere').datetimepicker({
 	    format: 'DD/MM/YYYY'
 });
@@ -468,7 +497,10 @@ alert('End date should be greater then Start Date');
 			 //alert(data);
 				alert(data);
 				location.reload();
-			 }
+			 },
+			error: function(){
+				alert('testing');
+			} 
 		 
 		 });
 		}
@@ -505,7 +537,29 @@ alert('End date should be greater then Start Date');
 	
  <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
 <script>
+$('textarea').on('paste', function(e){
+      var $this = $(this);
+      $.each(e.originalEvent.clipboardData.items, function(i, v){
+          if (v.type === 'text/plain'){
+              v.getAsString(function(text){
+                  var x = $this.closest('td').index(),
+                      y = $this.closest('tr').index()+1,
+                      obj = {};
+                  text = text.trim('\r\n');
+                  $.each(text.split('\r\n'), function(i2, v2){
+                      $.each(v2.split('\t'), function(i3, v3){
+                          var row = y+i2, col = x+i3;
+                          obj['cell-'+row+'-'+col] = v3;
+                          $this.closest('table').find('tr:eq('+row+') td:eq('+col+') textarea').val(v3);
+                      });
+                  });
 
+              });
+          }
+      });
+      return false;
+
+  });
 function PreviewImage() {
         var oFReader = new FileReader();
         oFReader.readAsDataURL(document.getElementById("uploadBtn1").files[0]);
@@ -1123,79 +1177,213 @@ var saveindex = $(this).parents('th').index();
 	
 				
 			
-	$('body').on('click',".icono .insert_row", function(){
+// 	$('body').on('click',".icono .insert_row", function(){
 	
 		
 		
-		$('#datatable-keytable_wrapper tbody tr').each(function(index, element) {
-	var ActivityArea = $(this).find('.activity_area');
-    if (!$.trim($(ActivityArea).val())) {
-  $(ActivityArea).parent().parent().find('.assign_person').prop('readonly',true);
-  $(ActivityArea).parent().parent().find('.assign_person').parent().addClass('disableChild');
-}
-else
-{
-  $(ActivityArea).parent().parent().find('.assign_person').prop('readonly',false);	
-  $(ActivityArea).parent().parent().find('.assign_person').parent().removeClass('disableChild');
-}
-});		
+// 		$('#datatable-keytable_wrapper tbody tr').each(function(index, element) {
+// 	var ActivityArea = $(this).find('.activity_area');
+//     if (!$.trim($(ActivityArea).val())) {
+//   $(ActivityArea).parent().parent().find('.assign_person').prop('readonly',true);
+//   $(ActivityArea).parent().parent().find('.assign_person').parent().addClass('disableChild');
+// }
+// else
+// {
+//   $(ActivityArea).parent().parent().find('.assign_person').prop('readonly',false);	
+//   $(ActivityArea).parent().parent().find('.assign_person').parent().removeClass('disableChild');
+// }
+// });		
 
 
-$('#datatable-keytable_wrapper tbody tr').each(function(index, element) {
-var MPR = $(this).find('.mpr');	
-	   if (!$.trim($(MPR).val())) {
-	$(MPR).parent().nextAll().removeClass('disableChild');
-}
-else
-{
+// $('#datatable-keytable_wrapper tbody tr').each(function(index, element) {
+// var MPR = $(this).find('.mpr');	
+// 	   if (!$.trim($(MPR).val())) {
+// 	$(MPR).parent().nextAll().removeClass('disableChild');
+// }
+// else
+// {
 	
-	setTimeout(function(){$(MPR).parent().nextAll().addClass('disableChild');},1000)
+// 	setTimeout(function(){$(MPR).parent().nextAll().addClass('disableChild');},1000)
 	
-}
+// }
 	
 	
-});
+// });
 
 
 
-$('#datatable-keytable_wrapper tbody tr').each(function(index, element) {
-var MPR = $(this).find('.pr');	
-	   if (!$.trim($(MPR).val())) {
-	$(MPR).parent().nextAll().removeClass('disableChild');
-}
-else
-{
-		setTimeout(function(){$(MPR).parent().nextAll().addClass('disableChild');},1000);
-}
+// $('#datatable-keytable_wrapper tbody tr').each(function(index, element) {
+// var MPR = $(this).find('.pr');	
+// 	   if (!$.trim($(MPR).val())) {
+// 	$(MPR).parent().nextAll().removeClass('disableChild');
+// }
+// else
+// {
+// 		setTimeout(function(){$(MPR).parent().nextAll().addClass('disableChild');},1000);
+// }
 	
 	
-});
+// });
 
-		//alert($('this').attr('class'));
-//       $('.table1 tbody').append($(".table1 tbody tr:first").clone());
-        var $curRow = $(this).parents('.icono').closest('tr'),
-        $curRow = $(this).parents('.icono').parent().parent();
-                $newRow = $curRow.clone(true);
-                $curRow.after($newRow);
-          //$('.table2 tbody tr td input[type="text"]').val(""); 
+// 		//alert($('this').attr('class'));
+// //       $('.table1 tbody').append($(".table1 tbody tr:first").clone());
+//         var $curRow = $(this).parents('.icono').closest('tr'),
+//         $curRow = $(this).parents('.icono').parent().parent();
+//                 $newRow = $curRow.clone(true);
+//                 $curRow.after($newRow);
+//           //$('.table2 tbody tr td input[type="text"]').val(""); 
 		  
-		     $newRow.find("td textarea, td input[type='text']").val("");
-			// $newRow.find("td select").prepend("<option selected></option>");
-			 $newRow.find('span.magic').remove();
-			 $newRow.find('input[type="hidden"]').attr('value','');
-			 $newRow.find('input.dateselect').attr('value','');
-			 	emptySetRowCell();
+// 		     $newRow.find("td textarea, td input[type='text']").val("");
+// 			// $newRow.find("td select").prepend("<option selected></option>");
+// 			 $newRow.find('span.magic').remove();
+// 			 $newRow.find('input[type="hidden"]').attr('value','');
+// 			 $newRow.find('input.dateselect').attr('value','');
+// 			 	emptySetRowCell();
+// 			setRowCell();
+// 			Emptyclonliness();
+// 			clonliness();
+			
+// 				var SaveLength = $('.clone_from #datatable-keytable_wrapper tbody tr').length;
+// 			TargetChild = SaveLength-1;
+// 	//var saveClassKar = $('.clone_from #datatable-keytable_wrapper tbody tr:nth-child('+TargetChild+')').attr('class'); 
+// 		//	alert(saveClassKar);
+// 			Hitagain(TargetChild);
+//     });
+
+$(".increment").on('click',function(){
+		var value = parseInt($(this).next('.quantity').val());
+		if (value < 50) {
+			$(this).next('.quantity').val(value + 1);
+		}
+	})	
+	$(".decrement").on('click',function(){ 
+		var value = parseInt($(this).parent().find('.quantity').val());
+		if (value > 1 && value <= 50) {
+			$(this).parent().find('.quantity').val(value - 1);
+		}
+	 })	 
+	 $('body').on('click', ".icono .insert_row", function () {
+		
+		 
+		var totals = $(this).parent().find('.quantity').val();
+		if (totals) {
+		var $datatableRows = $('#datatable-keytable_wrapper tbody tr');
+
+		function processInput($input, toggleClass) {
+			if (!$.trim($input.val())) {
+			$input.closest('tr').find('.assign_person').prop('readonly', true).parent().addClass('disableChild');
+			} else {
+			$input.closest('tr').find('.assign_person').prop('readonly', false).parent().removeClass('disableChild');
+			}
+		}
+
+		function processMPR(inputSelector, delay) {
+			$datatableRows.each(function (index, element) {
+			var $MPR = $(this).find(inputSelector);
+			if (!$.trim($MPR.val())) {
+				$MPR.parent().nextAll().removeClass('disableChild');
+			} else {
+				setTimeout(function () {
+				$MPR.parent().nextAll().addClass('disableChild');
+				}, delay);
+			}
+			});
+		}
+
+		for (let i = 0; i < totals; i++) {
+			$datatableRows.each(function (index, element) {
+				console.log(element);
+				processInput($(this).find('.activity_area'), 1000);
+			});
+
+			processMPR('.mpr', 100);
+			processMPR('.pr', 100);
+
+			var $curRow = $(this).parents('.icono').closest('tr');
+			var $newRow = $curRow.clone(true);
+			$curRow.after($newRow);
+			$newRow.find("td textarea, td input[type='text']").val("");
+			$newRow.find('span.magic').remove();
+			$newRow.find('input[type="hidden"]').val('');
+			$newRow.find('input.dateselect').val('');
+			//$newRow.find('input.stdate').removeClass('hasDatepicker').removeData('datepicker').unbind().datetimepicker({ format: 'DD/MM/YYYY HH:mm:ss' });
+			emptySetRowCell();
 			setRowCell();
 			Emptyclonliness();
 			clonliness();
-			
-				var SaveLength = $('.clone_from #datatable-keytable_wrapper tbody tr').length;
-			TargetChild = SaveLength-1;
-	//var saveClassKar = $('.clone_from #datatable-keytable_wrapper tbody tr:nth-child('+TargetChild+')').attr('class'); 
-		//	alert(saveClassKar);
+
+			var SaveLength = $('.clone_from #datatable-keytable_wrapper tbody tr').length;
+			var TargetChild = SaveLength - 1;
 			Hitagain(TargetChild);
-    });
-	
+		}
+		} else {
+			$('#datatable-keytable_wrapper tbody tr').each(function (index, element) {
+				var ActivityArea = $(this).find('.activity_area');
+				if (!$.trim($(ActivityArea).val())) {
+					$(ActivityArea).parent().parent().find('.assign_person').prop('readonly', true);
+					$(ActivityArea).parent().parent().find('.assign_person').parent().addClass('disableChild');
+				} else {
+					$(ActivityArea).parent().parent().find('.assign_person').prop('readonly', false);
+					$(ActivityArea).parent().parent().find('.assign_person').parent().removeClass('disableChild');
+				}
+			});
+
+
+				$('#datatable-keytable_wrapper tbody tr').each(function (index, element) {
+				var MPR = $(this).find('.mpr');
+				if (!$.trim($(MPR).val())) {
+					$(MPR).parent().nextAll().removeClass('disableChild');
+				} else {
+
+					setTimeout(function () {
+						$(MPR).parent().nextAll().addClass('disableChild');
+					}, 1000)
+
+				}
+
+
+				});
+
+
+				$('#datatable-keytable_wrapper tbody tr').each(function (index, element) {
+				var MPR = $(this).find('.pr');
+				if (!$.trim($(MPR).val())) {
+					$(MPR).parent().nextAll().removeClass('disableChild');
+				} else {
+					setTimeout(function () {
+						$(MPR).parent().nextAll().addClass('disableChild');
+					}, 1000);
+				}
+
+
+				});
+
+				//alert($('this').attr('class'));
+				//       $('.table1 tbody').append($(".table1 tbody tr:first").clone());
+				var $curRow = $(this).parents('.icono').closest('tr'),
+				$curRow = $(this).parents('.icono').parent().parent();
+				$newRow = $curRow.clone(true);
+				$curRow.after($newRow);
+				//$('.table2 tbody tr td input[type="text"]').val(""); 
+
+				$newRow.find("td textarea, td input[type='text']").val("");
+				// $newRow.find("td select").prepend("<option selected></option>");
+				$newRow.find('span.magic').remove();
+				$newRow.find('input[type="hidden"]').attr('value', '');
+				$newRow.find('input.dateselect').attr('value', '');
+				emptySetRowCell();
+				setRowCell();
+				Emptyclonliness();
+				clonliness();
+
+				var SaveLength = $('.clone_from #datatable-keytable_wrapper tbody tr').length;
+				TargetChild = SaveLength - 1;
+				//var saveClassKar = $('.clone_from #datatable-keytable_wrapper tbody tr:nth-child('+TargetChild+')').attr('class'); 
+				//	alert(saveClassKar);
+				Hitagain(TargetChild);
+		}	
+		
+	});
 	
 	
 	

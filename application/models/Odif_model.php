@@ -26,32 +26,112 @@
 			$current_date=$sdate;
 			$current_date_db=date("Y-m-d");
 
-			if($sdate!=''){
-				$od_query1="AND ((STR_TO_DATE(a.finish_date,'%d/%m/%Y') between '".$sdate."' AND '".$edate."' ) OR (STR_TO_DATE(a.finish_date,'%d/%m/%Y') between '".$sdate."' AND '".$edate."'))";		
-			}			
+			// if($sdate!=''){
+			// 	$od_query1="AND ((STR_TO_DATE(a.finish_date,'%d/%m/%Y') between '".$sdate."' AND '".$edate."' ) OR (STR_TO_DATE(a.finish_date,'%d/%m/%Y') between '".$sdate."' AND '".$edate."'))";		
+			// }		
+			if ($sdate !== '') {
+				// $od_query1="AND (
+				// 	((a.completed = '') OR (DATE(a.completed) BETWEEN '".$sdate."' AND '".$edate."') OR DATE(a.completed) > '".$sdate."')
+				// 	OR
+				// 	((STR_TO_DATE(a.finish_date, '%d/%m/%Y') BETWEEN '".$sdate."' AND '".$edate."')
+				// 	OR (STR_TO_DATE(a.finish_date, '%d/%m/%Y') BETWEEN '".$sdate."' AND '".$edate."'))
+				// )";
+				$od_query1="AND (
+					((a.completed = '' AND STR_TO_DATE(a.finish_date, '%d/%m/%Y') < '".$sdate."')  OR (DATE(a.completed) BETWEEN '".$sdate."' AND '".$edate."') OR (STR_TO_DATE(a.finish_date, '%d/%m/%Y') <= '".$sdate."' AND DATE(a.completed) >= '".$sdate."' AND a.completed != ''))
+					OR
+					((STR_TO_DATE(a.finish_date, '%d/%m/%Y') BETWEEN '".$sdate."' AND '".$edate."')
+					OR (STR_TO_DATE(a.finish_date, '%d/%m/%Y') BETWEEN '".$sdate."' AND '".$edate."'))
+				)";
+			}	
 		
 			if($responsilbe_person!=''){
 				$od_query2="AND a.assigned_person='".$responsilbe_person."'";	
 			}
 		
-		   $sql="SELECT * FROM `activity` a INNER JOIN process p ON a.`process_id`=p.pid INNER JOIN mega_process mp on p.mp_id=mp.mp_id WHERE a.project_id='".$projectid."' ".$od_query1." ".$od_query2." " ;
+		   $sql="SELECT *,CASE WHEN ((DATE(a.completed) BETWEEN '" . $sdate . "' AND '" . $edate . "')) THEN 1 ELSE 0 END AS activity_status  FROM `activity` a INNER JOIN process p ON a.`process_id`=p.pid INNER JOIN mega_process mp on p.mp_id=mp.mp_id WHERE a.status = 0 AND a.project_id='".$projectid."' ".$od_query1." ".$od_query2." " ;
 		   $res=$this->db->query($sql);
 		   return $res->result_array();			
 		   }
+		   
+	public function odif_multi_filter_range($projectid,$sdate,$edate,$responsilbe_person){
+			$current_date=$sdate;
+			$current_date_db=date("Y-m-d");
+
+			// if($sdate!=''){
+			// 	$od_query1="AND ((STR_TO_DATE(a.finish_date,'%d/%m/%Y') between '".$sdate."' AND '".$edate."' ) OR (STR_TO_DATE(a.finish_date,'%d/%m/%Y') between '".$sdate."' AND '".$edate."'))";		
+			// }			
+			if ($sdate !== '') {
+				$od_query1 = "AND (
+					(
+						(a.completed = '') 
+						AND (
+							(STR_TO_DATE(a.finish_date, '%d/%m/%Y') BETWEEN '$sdate' AND '$edate')
+							OR (STR_TO_DATE(a.finish_date, '%d/%m/%Y') BETWEEN '$sdate' AND '$edate')
+						)
+					)
+					OR
+					(
+						(a.completed IS NOT NULL) 
+						AND (DATE(a.completed) BETWEEN '$sdate' AND '$edate')
+					)
+				)";
+			}	
+			// if ($sdate !== '') {
+			// 	$od_query1="AND (
+			// 		((a.completed = '' AND STR_TO_DATE(a.finish_date, '%d/%m/%Y') < '".$sdate."' AND DATE(a.completed) BETWEEN '".$sdate."' AND '".$edate."')  OR (DATE(a.completed) BETWEEN '".$sdate."' AND '".$edate."') OR (DATE(a.completed) >= '".$sdate."' AND a.completed != ''))
+			// 		OR
+			// 		((STR_TO_DATE(a.finish_date, '%d/%m/%Y') BETWEEN '".$sdate."' AND '".$edate."')
+			// 		OR (STR_TO_DATE(a.finish_date, '%d/%m/%Y') BETWEEN '".$sdate."' AND '".$edate."'))
+			// 	)";
+			// }
+			if($responsilbe_person!=''){
+				$od_query2="AND a.assigned_person='".$responsilbe_person."'";	
+			}
 		
+		   $sql="SELECT *,count(a.activity_name) AS activity_total, count(a.activity_status) AS total_activity_status, SUM(a.planned_quantity) AS planned_quantity,SUM(a.actually_quantity) AS actually_quantity, CASE WHEN ((DATE(a.completed) BETWEEN '" . $sdate . "' AND '" . $edate . "')) THEN 1 ELSE 0 END AS activity_status, SUM(activity_status) AS total_status FROM `activity` a INNER JOIN process p ON a.`process_id`=p.pid INNER JOIN mega_process mp on p.mp_id=mp.mp_id WHERE a.`status` = '0' AND a.project_id='".$projectid."' ".$od_query1." ".$od_query2."  GROUP BY a.finish_date, a.assigned_person";
+		 // echo $sql;die;
+		//  $sql = "SELECT a.finish_date, a.assigned_person, COUNT(a.activity_name) AS activity_name, SUM(a.planned_quantity) AS planned_quantity, SUM(a.actually_quantity) AS actually_quantity, CASE WHEN (DATE(a.completed) BETWEEN '" . $sdate . "' AND '" . $edate . "') THEN 1 ELSE 0 END AS activity_status 
+        // FROM `activity` a 
+        // INNER JOIN process p ON a.`process_id`=p.pid 
+        // INNER JOIN mega_process mp ON p.mp_id=mp.mp_id 
+        // WHERE a.`status` = '0' AND a.project_id='".$projectid."' ".$od_query1." ".$od_query2."  
+        // GROUP BY a.finish_date, a.assigned_person, activity_status";
+// echo $sql;die;
+		   $res=$this->db->query($sql);
+			//    echo "<pre>";
+			//    print_r($res->result_array()	);die;
+		   return $res->result_array();			
+		   }
+
 		   public function get_odif_all_filter_range($projectid,$sdate,$edate,$responsilbe_person){
 			$current_date=date("d/m/Y");
 			$current_date_db=date("Y-m-d");
 
-			if($sdate!=''){
-				$od_query1="AND ((STR_TO_DATE(a.finish_date,'%d/%m/%Y') between '".$sdate."' AND '".$edate."' ) OR (STR_TO_DATE(a.finish_date,'%d/%m/%Y') between '".$sdate."' AND '".$edate."'))";		
-			}			
+			// if($sdate!=''){
+			// 	$od_query1="AND ((STR_TO_DATE(a.finish_date,'%d/%m/%Y') between '".$sdate."' AND '".$edate."' ) OR (STR_TO_DATE(a.finish_date,'%d/%m/%Y') between '".$sdate."' AND '".$edate."'))";		
+			// }		
+			// if ($sdate !== '') {
+			// 	$od_query1="AND (
+			// 		((a.completed = '' ) OR (DATE(a.completed) BETWEEN '".$sdate."' AND '".$edate."') OR DATE(a.completed) >= '".$sdate."')
+			// 		OR
+			// 		((STR_TO_DATE(a.finish_date, '%d/%m/%Y') BETWEEN '".$sdate."' AND '".$edate."')
+			// 		OR (STR_TO_DATE(a.finish_date, '%d/%m/%Y') BETWEEN '".$sdate."' AND '".$edate."'))
+			// 	)";
+			// }	
+			if ($sdate !== '') {
+				$od_query1="AND (
+					((a.completed = '' AND STR_TO_DATE(a.finish_date, '%d/%m/%Y') < '".$sdate."' ) OR (DATE(a.completed) BETWEEN '".$sdate."' AND '".$edate."') OR (STR_TO_DATE(a.finish_date, '%d/%m/%Y') <= '".$sdate."' AND DATE(a.completed) >= '".$sdate."' AND a.completed != ''))
+					OR
+					((STR_TO_DATE(a.finish_date, '%d/%m/%Y') BETWEEN '".$sdate."' AND '".$edate."')
+					OR (STR_TO_DATE(a.finish_date, '%d/%m/%Y') BETWEEN '".$sdate."' AND '".$edate."'))
+				)";
+			}	
 		
 			if($responsilbe_person!=''){
 				$od_query2="AND a.assigned_person='".$responsilbe_person."'";	
 			}
 
-			$sql="SELECT * FROM `activity` a INNER JOIN process p ON a.`process_id`=p.pid INNER JOIN mega_process mp on p.mp_id=mp.mp_id WHERE a.project_id='".$projectid."' ".$od_query1." ".$od_query2." " ;
+			$sql="SELECT * FROM `activity` a INNER JOIN process p ON a.`process_id`=p.pid INNER JOIN mega_process mp on p.mp_id=mp.mp_id WHERE a.status = 0 AND a.project_id='".$projectid."' ".$od_query1." ".$od_query2." " ;
 			$res=$this->db->query($sql);
 			return $res->result_array();
 				
@@ -61,15 +141,31 @@
 			$current_date=date("d/m/Y");
 			$current_date_db=date("Y-m-d");
 
-			if($sdate!=''){
-				$od_query1="AND ((STR_TO_DATE(a.finish_date,'%d/%m/%Y') between '".$sdate."' AND '".$edate."' ) OR (STR_TO_DATE(a.finish_date,'%d/%m/%Y') between '".$sdate."' AND '".$edate."'))";		
-			}			
+			// if($sdate!=''){
+			// 	$od_query1="AND ((STR_TO_DATE(a.finish_date,'%d/%m/%Y') between '".$sdate."' AND '".$edate."' ) OR (STR_TO_DATE(a.finish_date,'%d/%m/%Y') between '".$sdate."' AND '".$edate."'))";		
+			// }	
+			if ($sdate !== '') {
+				$od_query1 = "AND (
+					(
+						(a.completed = '') 
+						AND (
+							(STR_TO_DATE(a.finish_date, '%d/%m/%Y') BETWEEN '$sdate' AND '$edate')
+							OR (STR_TO_DATE(a.finish_date, '%d/%m/%Y') BETWEEN '$sdate' AND '$edate')
+						)
+					)
+					OR
+					(
+						(a.completed IS NOT NULL) 
+						AND (DATE(a.completed) BETWEEN '$sdate' AND '$edate')
+					)
+				)";
+			}		
 		
 			if($responsilbe_person!=''){
 				$od_query2="AND a.assigned_person='".$responsilbe_person."'";	
 			}
 
-			$sql="SELECT * FROM `activity` a INNER JOIN process p ON a.`process_id`=p.pid INNER JOIN mega_process mp on p.mp_id=mp.mp_id WHERE a.activity_status=1  AND a.project_id='".$projectid."' ".$od_query1." ".$od_query2." " ;
+			$sql="SELECT * FROM `activity` a INNER JOIN process p ON a.`process_id`=p.pid INNER JOIN mega_process mp on p.mp_id=mp.mp_id WHERE a.activity_status=1 AND a.status = 0 AND a.project_id='".$projectid."' ".$od_query1." ".$od_query2." " ;
 			$res=$this->db->query($sql);
 			return $res->result_array();
 				
@@ -199,11 +295,11 @@ and a.project_id='".$project_id."' AND a.status=0";
 		
 		public function get_all_projects(){
 		
-		$sql="SELECT * FROM project_name WHERE status=0 AND is_wbs_submitted=1";
+		$sql="SELECT * FROM project_name WHERE status=0 ";
 		$res=$this->db->query($sql);
 		return $res->result_array();	
 		}
-		
+	
 		public function get_project_reminder_time($project_id){
 		
 		$sql="SELECT * FROM project_name WHERE project_id='".$project_id."'";
@@ -212,18 +308,50 @@ and a.project_id='".$project_id."' AND a.status=0";
 		}
 		
 		public function get_todays_odif($projectid){
+		$projects  = $this->get_project_reminder_time($projectid);
 		 $current_date=date("d/m/Y");
 		 $current_date_db=date("Y-m-d");
-		$sql="SELECT * FROM `activity` a INNER JOIN process p ON a.`process_id`=p.pid INNER JOIN mega_process mp on p.mp_id=mp.mp_id WHERE ((a.finish_date = '".$current_date."' AND a.status=0) OR  (STR_TO_DATE(finish_date,'%d/%m/%Y') <= STR_TO_DATE('".$current_date."','%d/%m/%Y') AND a.status=0  AND (a.activity_status=0 OR date(a.activity_status_modified)='".$current_date_db."') )) AND a.project_id='".$projectid."' " ;
+		 if($projects->daterange > date('H:i'))
+			$sym = '>';
+		else 
+			$sym = '<';
+		if($projects->daterange < date('H:i')){
+			$sym1 = '=';
+			$current_date_db=date("Y-m-d");
+		} else {
+			$sym1 = '=';
+			$current_date_db=date("Y-m-d",strtotime('yesterday'));
+			
+		}
+
+		$sql="SELECT * FROM `activity` a INNER JOIN process p ON a.`process_id`=p.pid INNER JOIN mega_process mp on p.mp_id=mp.mp_id WHERE ((DATE_FORMAT(CURRENT_TIME(), '%H:%i') ".$sym."= '$projects->daterange' AND a.finish_date = '$current_date' AND a.status = 0)  OR  (STR_TO_DATE(finish_date,'%d/%m/%Y') <".$sym1." STR_TO_DATE('".$current_date."','%d/%m/%Y') AND a.status=0  AND (a.activity_status=0 OR date(a.activity_status_modified)='".$current_date_db."') )) AND a.project_id='".$projectid."' Order by finish_date" ;
+		//echo $sql;die;
 		$res=$this->db->query($sql);
 		return $res->result_array();			
 		}
 		
 		
 		public function get_todays_odif_all($projectid){
+		$projects  = $this->get_project_reminder_time($projectid);
 		$current_date=date("d/m/Y");
 		$current_date_db=date("Y-m-d");
-		$sql="SELECT * FROM `activity` a INNER JOIN process p ON a.`process_id`=p.pid INNER JOIN mega_process mp on p.mp_id=mp.mp_id WHERE ((a.finish_date = '".$current_date."' AND a.status=0) OR  (STR_TO_DATE(finish_date,'%d/%m/%Y') <= STR_TO_DATE('".$current_date."','%d/%m/%Y') AND a.status=0  AND (a.activity_status=0 OR date(a.activity_status_modified)='".$current_date_db."') )) AND a.project_id='".$projectid."' " ;
+		//$sql="SELECT * FROM `activity` a INNER JOIN process p ON a.`process_id`=p.pid INNER JOIN mega_process mp on p.mp_id=mp.mp_id WHERE ((a.finish_date = '".$current_date."' AND a.status=0) OR  (STR_TO_DATE(finish_date,'%d/%m/%Y') <= STR_TO_DATE('".$current_date."','%d/%m/%Y') AND a.status=0  AND (a.activity_status=0 OR date(a.activity_status_modified)='".$current_date_db."') )) AND a.project_id='".$projectid."' " ;
+// echo $projects->daterange;die;/
+//echo date('H:i');die;
+		if($projects->daterange > date('H:i'))
+		$sym = '>';
+		else 
+		$sym = '<';
+		if($projects->daterange < date('H:i')){
+			$current_date_db=date("Y-m-d");
+			$sym1 = '=';
+		} else {
+			$sym1 = '';
+			$current_date_db=date("Y-m-d",strtotime('yesterday'));
+		}
+		$sql="SELECT * FROM `activity` a INNER JOIN process p ON a.`process_id`=p.pid INNER JOIN mega_process mp on p.mp_id=mp.mp_id WHERE (
+			(DATE_FORMAT(CURRENT_TIME(), '%H:%i') ".$sym."= '$projects->daterange' AND a.finish_date = '$current_date' AND a.status = 0)  OR  (STR_TO_DATE(finish_date,'%d/%m/%Y') <".$sym1." STR_TO_DATE('".$current_date."','%d/%m/%Y') AND a.status=0  AND (a.activity_status=0 OR date(a.activity_status_modified)='".$current_date_db."') )) AND a.project_id='".$projectid."' " ;
+			//echo $sql;die;
 		$res=$this->db->query($sql);
 		return $res->result_array();
 			
@@ -232,6 +360,12 @@ and a.project_id='".$project_id."' AND a.status=0";
 		public function get_todays_odif_completed($projectid){
 		$current_date=date("d/m/Y");
 		$current_date_db=date("Y-m-d");
+		$projects  = $this->get_project_reminder_time($projectid);
+		if($projects->daterange < date('H:i')){
+			$current_date_db=date("Y-m-d");
+		} else {
+			$current_date_db=date("Y-m-d",strtotime('yesterday'));
+		}
 		$sql="SELECT * FROM `activity` a INNER JOIN process p ON a.`process_id`=p.pid INNER JOIN mega_process mp on p.mp_id=mp.mp_id WHERE STR_TO_DATE(finish_date,'%d/%m/%Y') <= STR_TO_DATE('".$current_date."','%d/%m/%Y') AND a.activity_status=1 AND a.project_id='".$projectid."' AND a.status=0 AND  date(a.activity_status_modified)='".$current_date_db."'" ;
 		$res=$this->db->query($sql);
 		return $res->result_array();
@@ -243,7 +377,7 @@ and a.project_id='".$project_id."' AND a.status=0";
 		public function get_todays_odif_member($projectid,$assigned_person){
 		$current_date=date("d/m/Y");
 		$current_date_db=date("Y-m-d");
-	    $sql="SELECT * FROM `activity` a INNER JOIN process p ON a.`process_id`=p.pid INNER JOIN mega_process mp on p.mp_id=mp.mp_id WHERE ((a.finish_date = '".$current_date."' AND a.project_id='".$projectid."' AND a.assigned_person='".$assigned_person."') OR (STR_TO_DATE(finish_date,'%d/%m/%Y') <= STR_TO_DATE('".$current_date."','%d/%m/%Y')  AND a.assigned_person='".$assigned_person."' AND a.project_id='".$projectid."' AND date(a.activity_status_modified)='".$current_date_db."' ) )  AND a.status=0" ;
+	    $sql="SELECT * FROM `activity` a INNER JOIN process p ON a.`process_id`=p.pid INNER JOIN mega_process mp on p.mp_id=mp.mp_id WHERE ((a.finish_date = '".$current_date."' AND a.project_id='".$projectid."' AND a.assigned_person='".$assigned_person."') OR (STR_TO_DATE(finish_date,'%d/%m/%Y') <= STR_TO_DATE('".$current_date."','%d/%m/%Y')  AND a.assigned_person='".$assigned_person."' AND a.project_id='".$projectid."' AND  (a.activity_status=0 OR date(a.activity_status_modified) ='".$current_date_db."')) )  AND a.status=0" ;
 		$res=$this->db->query($sql);
 		return $res->result_array();
 			

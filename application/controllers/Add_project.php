@@ -840,7 +840,7 @@
 			if($loggedin == TRUE) {
 				$role = $this->session->userdata['role'];
 				$user_id = $this->session->userdata['user_id'];
-				if($role == 'Admin' || $role == 'Project Manager' || $role == 'Editor'){
+				if($role == 'Admin' || $role == 'Project Manager' || $role == 'Editor' || $role == 'Team Member'){
 					
 						if(isset($_POST['project_name1'])) {
 							$config['upload_path'] = './project_uploads/';

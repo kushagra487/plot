@@ -8,7 +8,7 @@ $role = $this->session->userdata['role']; ?>
 <div class="right_col" role="main">
 	<section>
 		<h3 class="title text-uppercase">My project</h3>
-          <?php if($role=="Project Manager" || $role=="Admin"){?>
+          <?php if($role=="Project Manager" || $role=="Admin" || $role=="Team Member"){?>
         <div class="curve_btn red_btn text-right">
         <a href="<?php echo base_url()?>add_project/add_new_project">Add New</a>
         </div>

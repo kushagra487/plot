@@ -233,7 +233,7 @@ class Wbs_list_model extends CI_Model{
 
 	
 
-	$result = $this->db->query('SELECT * FROM activity WHERE parent_activity_id = "'.(int)$parent.'" AND process_id="'.$process_id.'" AND status=0 '.$rp_query.' '.$rp_query1.' '.$rp_query2.'' );
+	$result = $this->db->query('SELECT * FROM activity WHERE parent_activity_id = "'.(int)$parent.'" AND process_id="'.$process_id.'" AND status=0 '.$rp_query.' '.$rp_query1.' '.$rp_query2.' Order By activity_id asc' );
 
 	/*}*/
 
@@ -493,7 +493,8 @@ class Wbs_list_model extends CI_Model{
 
 			
 
-			echo "<td><textarea readonly>" . $row_activity['planned_quantity'] . "</textarea></td>
+			echo "<td><textarea readonly>" . $row_activity['uom'] . "</textarea></td>
+			<td><textarea readonly>" . $row_activity['planned_quantity'] . "</textarea></td>
 			
 			<td><textarea readonly>" . $row_activity['temp_actual_quantity'] . "</textarea></td>
 			
@@ -669,7 +670,8 @@ class Wbs_list_model extends CI_Model{
 
 			
 
-			echo "<td><textarea readonly>" . $row_activity['planned_quantity'] . "</textarea></td>
+			echo "<td><textarea readonly>" . $row_activity['uom'] . "</textarea></td>
+			<td><textarea readonly>" . $row_activity['planned_quantity'] . "</textarea></td>
 			
 			<td><textarea readonly>" . $row_activity['actually_quantity'] . "</textarea></td>
 			
@@ -1034,7 +1036,8 @@ public function tree_process_edit($id,$mp_id ,$indent=1,$projectid) {
 
 
 
-		  echo "<td><input value='' name='planned_quantity[]'></td>
+		  echo "<td><input value='' name='uom[]'></td>
+		  <td><input value='' name='planned_quantity[]'></td>
 
                 <td><input value='' name='actually_quantity[]'></td>
 
@@ -1247,8 +1250,10 @@ public function tree_process_edit($id,$mp_id ,$indent=1,$projectid) {
 			echo "<tr class='".$color."'><td>".$row_activity['unique_code']."</td><td><textarea  class='mpr'></textarea><div class='mtn_togg icono'><span class='toggle_insert'><i class='fa fa-angle-right'></i></span>
 
 
-
-                                    <span class='hover_toggle'><small class='insert_row mp'>Insert</small><small class='delete_row'>Delete</small></span></div></td>";
+			<span class='hover_toggle'><a  class='btn btn-success increment'>+</a>
+			<input type='text' class='quantity' value='1' style='color:black;width:30px;height:30px'>
+		<a class='btn btn-primary decrement'>-</a>
+		<small class='insert_row mp'>Insert</small><small class='delete_row'>Delete</small></span></div></td>";
 
 
 
@@ -1328,7 +1333,8 @@ public function tree_process_edit($id,$mp_id ,$indent=1,$projectid) {
 
 
 
-			echo "<td><input type='text' value='" . $row_activity['planned_quantity'] . "' class=''  name='planned_quantity[]' ></td>
+			echo "<td><input type='text' value='" . $row_activity['uom'] . "' class=''  name='uom[]' ></td>
+			<td><input type='text' value='" . $row_activity['planned_quantity'] . "' class=''  name='planned_quantity[]' ></td>
 			
 			<td><input type='text' value='" . $row_activity['actually_quantity'] . "' class=''  name='actually_quantity[]' ></td>
 			
@@ -1861,6 +1867,8 @@ public function tree_process_edit($id,$mp_id ,$indent=1,$projectid) {
 
 
 			echo "<td>
+			<input type='text' value='" . $row_activity['uom'] . "' name='uom[]' >
+					</td><td>
 	<input type='text' value='" . $row_activity['planned_quantity'] . "' name='planned_quantity[]' >
 			</td>
 			
@@ -2491,7 +2499,8 @@ public function tree_process_export($id,$mp_id ,$indent=1,$projectid) {
 
 			
 
-			echo "<td  align='left'>" . $row_activity['planned_quantity'] . "</td>
+			echo "<td  align='left'>" . $row_activity['uom'] . "</td>
+			<td  align='left'>" . $row_activity['planned_quantity'] . "</td>
 			
 			<td  align='left'>" . $row_activity['actually_quantity'] . "</td>
 			

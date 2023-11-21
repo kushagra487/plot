@@ -1,10 +1,27 @@
 <?php 
 ini_set("memory_limit","1000M");
 $role = $this->session->userdata['role']; 
+$project_id=$this->uri->segment('3');
 $powner=$this->projects_model->view_projects_details_id($this->uri->segment('3'));
-//print_r($powner);
-
+$sql="select * from project_name where project_id='".$project_id."'";
+$query = $this->db->query($sql);
+//echo $this->db->last_query();
+ $project_data=$query->row_array();
+ //condition to check project created by team member and give them permission to edit and import wbs.
+ if($this->session->userdata['user_id']==$project_data['user_id']){
+  $powner['powner']=$this->session->userdata['user_id'];
+ }
+//print_r($project_data);die;
+// print_r($powner);
+// die;
 ?>
+<style>
+  @media (min-width: 1280px) {
+      .wbs_uploads .col-md-2 {
+          width: 13%;
+      }
+  }
+</style>
 <div class="right_col" role="main">
 <h3 class="title text-uppercase"><?php echo $project_details['project_name']; ?> <img src="<?php echo base_url()?>project_uploads/<?php echo $project_details['project_logo']?>" style="width:50px;height:50px;"> </h3> 
 <div>
@@ -24,7 +41,7 @@ $powner=$this->projects_model->view_projects_details_id($this->uri->segment('3')
         <div class="row">
         
         	<div class="col-md-4 ">
-             <form <?php if($role=="Admin" || $role=="Editor") { echo ""; } else if($role=='Team Member' || ($this->session->userdata['user_id']!=$powner['powner']) ) { ?> class="disabledbtn" <?php } ?> method="post" enctype="multipart/form-data" action="<?php echo base_url()?>/wbs_list/import">
+             <form <?php if($role=="Admin" || $role=="Editor") { echo ""; } else if($this->session->userdata['user_id']!=$powner['powner'] ) { ?> class="disabledbtn" <?php } ?> method="post" enctype="multipart/form-data" action="<?php echo base_url()?>/wbs_list/import">
              <input type="hidden" name="projectid" value="<?php echo $this->uri->segment('3');?>">
             <div class="input-group">
       <input type="file" id="csv_to_upload" class="form-control" placeholder="Search for..." name="csv_to_process">
@@ -47,13 +64,18 @@ $powner=$this->projects_model->view_projects_details_id($this->uri->segment('3')
         </div>
         <div class="col-md-2 col-xs-6">
         	<div class="curve_btn green_btn">
+            <a href="<?php echo base_url() . 'odif/odiffilter/' . $this->uri->segment('3'); ?>" title="odif reports" id="add_member"><i class="fa fa-file-text-o" aria-hidden="true"></i> Odif Reports</a>
+            </div>
+        </div>
+        <div class="col-md-2 col-xs-6">
+        	<div class="curve_btn green_btn">
             <a href="<?php echo base_url() . 'wbs_list/share_wbs/' . $this->uri->segment('3'); ?>" title="Share" id="add_member"  data-toggle="modal" data-target="#myModal_share"><i class="fa fa-share-alt" aria-hidden="true"></i> Share</a>
             </div>
         </div>
          
           <?php if($wbs_data==''){?>
           <div class="col-md-2 col-xs-6">
-        	<div class="curve_btn red_btn <?php if($role=="Admin" || $role=="Editor") { echo ""; } else if($role=='Team Member' || ($this->session->userdata['user_id']!=$powner['powner']) ) { ?> disabledbtn <?php } ?>">
+        	<div class="curve_btn red_btn <?php if($role=="Admin" || $role=="Editor") { echo ""; } else if($this->session->userdata['user_id']!=$powner['powner'] ) { ?> disabledbtn <?php } ?>">
             <a href="<?php echo  base_url() . 'wbs/index/' . $this->uri->segment('3'); ?>" title="Add WBS" id="export_wbs"><i class="fa fa-plus" aria-hidden="true"></i> Add WBS</a>
             </div>
         </div>
@@ -62,7 +84,7 @@ $powner=$this->projects_model->view_projects_details_id($this->uri->segment('3')
 		
 		else{ if($project_details['status']==0) {?>
         <div class="col-md-2 col-xs-6">
-        	<div class="curve_btn green_btn <?php if($role=="Admin" || $role=="Editor") { echo ""; } else if($role=='Team Member' || ($this->session->userdata['user_id']!=$powner['powner']) ) { ?> disabledbtn <?php } ?>">
+        	<div class="curve_btn green_btn <?php if($role=="Admin" || $role=="Editor") { echo ""; } else if($this->session->userdata['user_id']!=$powner['powner'] ) { ?> disabledbtn <?php } ?>">
             <a href="<?php echo base_url() . 'edit_wbs/index/' . $this->uri->segment('3'); ?>" title="Edit" id="export_wbs"><i class="fa fa-edit" aria-hidden="true"></i> Edit</a>
             </div>
         </div>
@@ -168,8 +190,7 @@ $powner=$this->projects_model->view_projects_details_id($this->uri->segment('3')
 	$result_depth=$res_depth->row();
 	$result_depth_process=$result_depth->process_columns;
 	$result_depth_activity=$result_depth->activity_columns;
-	
-	
+ 
 		for($i=0;$i<$result_depth_process;$i++){
 		?>
         
@@ -177,12 +198,13 @@ $powner=$this->projects_model->view_projects_details_id($this->uri->segment('3')
         <?php } for($i=0;$i<$result_depth_activity;$i++){?>
         <th class="cell13"><textarea rows="1" cols="10" name="cell13[]">Activity</textarea></th>
         <?php } ?>
+        <th class="cell13"><textarea rows="1" cols="10" name="cell13[]">UOM</textarea></th>
 		<th class="cell13"><textarea rows="1" cols="10" name="cell13[]">Planned Quantity</textarea></th>
 		
 		<th class="cell13"><textarea rows="1" cols="10" name="cell13[]">Actual Quantity</textarea></th>
 		
-        <th class="cell13"><textarea rows="1" cols="10" name="cell13[]">Start Date</textarea></th>
-        <th class="cell13"><textarea rows="1" cols="10" name="cell13[]">Finish Date</textarea></th>
+        <th class="cell13"><textarea rows="1" cols="10" name="cell13[]">Start Date & Time</textarea></th>
+        <th class="cell13"><textarea rows="1" cols="10" name="cell13[]" style="width:140px !important;">Finish Date & Time</textarea></th>
         <th class="cell13"><textarea rows="1" cols="10" name="cell13[]">Assigned Person</textarea></th>
         <th class="cell13"><textarea rows="1" cols="10" name="cell13[]">Resources</textarea></th>
         <th><textarea name="col[]" cols="10" rows="1"> Dependency</textarea></th>
@@ -203,6 +225,7 @@ $powner=$this->projects_model->view_projects_details_id($this->uri->segment('3')
 			}
 			$sql_mp="SELECT * FROM mega_process WHERE project_id='".$this->uri->segment('3')."' AND status=0 ".$query_append."";
 			$res_mp=$this->db->query($sql_mp);
+      //print_r($res_mp->result());die;
 			
 			//print_r($res_mp->result());
 
@@ -234,7 +257,8 @@ $powner=$this->projects_model->view_projects_details_id($this->uri->segment('3')
             <td>&nbsp;</td>
             <td>&nbsp;</td>
             <td>&nbsp;</td>
-           
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
             </tr>
       
 <?php

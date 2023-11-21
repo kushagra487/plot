@@ -27,6 +27,7 @@
 		
 		public function index() {	
 			$loggedin = $this->logged_in();
+			 
 			if($loggedin == TRUE) {
 				$get_id =  $this->uri->segment('3');
 				$user_id = $this->session->userdata['user_id'];
@@ -264,7 +265,17 @@
 					}
 					//echo "<br>bb-->".$img_name;	
 					$actid_unique++;
-					 echo $sql_actiity_ins="INSERT INTO activity (activity_name,planned_quantity,actually_quantity,start_date,finish_date,assigned_person,resources,template_reference,project_id,dependent_on,last_modified,template_document,activity_status,activity_status_modified,comments) VALUES ('".addslashes($_POST['rowC'.$newj][$l])."','".$_POST['planned_quantity'][$l]."','".$_POST['actually_quantity'][$l]."','".$_POST['start_date'][$l]."','".$_POST['end_date'][$l]."','".$_POST['responsibilities'][$l]."','".$_POST['resources'][$l]."','".$_POST['template_reference'][$l]."','".$this->uri->segment('3')."','".$_POST['dependency'][$l]."',now(),'".$img_name."','".$_POST['activity_status'][$l]."','".$_POST['activity_status_modified'][$l]."','".$_POST['comments'][$l]."')";
+					$sql_com="SELECT completed from activity WHERE activity_name='".addslashes($_POST['rowC'.$newj][$l])."' AND status=1 ORDER BY activity_id DESC LIMIT 1";
+					$query_com=$this->db->query($sql_com);
+					$res_com = $query_com->row(); 
+					
+					 
+					if($res_com->completed){
+						$completed = $res_com->completed;
+					} else {
+						$completed =  '';
+					}
+					$sql_actiity_ins="INSERT INTO activity (activity_name,planned_quantity,actually_quantity,start_date,finish_date,assigned_person,resources,template_reference,project_id,dependent_on,last_modified,template_document,activity_status,activity_status_modified,comments,completed,uom) VALUES ('".addslashes($_POST['rowC'.$newj][$l])."','".$_POST['planned_quantity'][$l]."','".$_POST['actually_quantity'][$l]."','".$_POST['start_date'][$l]."','".$_POST['end_date'][$l]."','".$_POST['responsibilities'][$l]."','".$_POST['resources'][$l]."','".$_POST['template_reference'][$l]."','".$this->uri->segment('3')."','".$_POST['dependency'][$l]."',now(),'".$img_name."','".$_POST['activity_status'][$l]."','".$_POST['activity_status_modified'][$l]."','".$_POST['comments'][$l]."','".$completed."','".$_POST['uom'][$l]."')";
 					$this->db->query($sql_actiity_ins);
 					
 					$autoid_activity=$this->db->insert_id();	
@@ -575,7 +586,18 @@
 						$img_name =$_POST['previous_document'][$l];	
 					}
 					$actid_unique++;
-					 $sql_actiity_ins="INSERT INTO activity (activity_name,planned_quantity,actually_quantity,start_date,finish_date,assigned_person,resources,template_reference,project_id,dependent_on,last_modified,template_document,activity_status,activity_status_modified,comments) VALUES ('".addslashes($_POST['rowC'.$newj][$l])."','".$_POST['planned_quantity'][$l]."','".$_POST['actually_quantity'][$l]."','".$_POST['start_date'][$l]."','".$_POST['end_date'][$l]."','".$_POST['responsibilities'][$l]."','".$_POST['resources'][$l]."','".$_POST['template_reference'][$l]."','".$this->uri->segment('3')."','".$_POST['dependency'][$l]."',now(),'".$img_name."','".$_POST['activity_status'][$l]."','".$_POST['activity_status_modified'][$l]."','".$_POST['comments'][$l]."')";
+					$sql_com="SELECT completed from activity WHERE activity_name='".addslashes($_POST['rowC'.$newj][$l])."' AND status=1 ORDER BY activity_id DESC LIMIT 1";
+					$query_com=$this->db->query($sql_com);
+					$res_com = $query_com->row(); 
+					
+					 
+					if($res_com->completed){
+						$completed = $res_com->completed;
+					} else {
+						$completed ='';
+					}
+
+					 $sql_actiity_ins="INSERT INTO activity (activity_name,planned_quantity,actually_quantity,start_date,finish_date,assigned_person,resources,template_reference,project_id,dependent_on,last_modified,template_document,activity_status,activity_status_modified,comments,completed, uom) VALUES ('".addslashes($_POST['rowC'.$newj][$l])."','".$_POST['planned_quantity'][$l]."','".$_POST['actually_quantity'][$l]."','".$_POST['start_date'][$l]."','".$_POST['end_date'][$l]."','".$_POST['responsibilities'][$l]."','".$_POST['resources'][$l]."','".$_POST['template_reference'][$l]."','".$this->uri->segment('3')."','".$_POST['dependency'][$l]."',now(),'".$img_name."','".$_POST['activity_status'][$l]."','".$_POST['activity_status_modified'][$l]."','".$_POST['comments'][$l]."','".$completed."', '".$_POST['uom'][$l]."')";
 					$this->db->query($sql_actiity_ins);
 					
 					$autoid_activity=$this->db->insert_id();	
@@ -888,7 +910,20 @@
 						$img_name =$_POST['previous_document'][$l];	
 					}
 					$actid_unique++;
-					 $sql_actiity_ins="INSERT INTO activity (activity_name,planned_quantity,actually_quantity,start_date,finish_date,assigned_person,resources,template_reference,project_id,dependent_on,last_modified,template_document,activity_status,activity_status_modified,comments) VALUES ('".addslashes($_POST['rowC'.$newj][$l])."','".$_POST['planned_quantity'][$l]."','".$_POST['actually_quantity'][$l]."','".$_POST['start_date'][$l]."','".$_POST['end_date'][$l]."','".$_POST['responsibilities'][$l]."','".$_POST['resources'][$l]."','".$_POST['template_reference'][$l]."','".$this->uri->segment('3')."','".$_POST['dependency'][$l]."',now(),'".$img_name."','".$_POST['activity_status'][$l]."','".$_POST['activity_status_modified'][$l]."','".$_POST['comments'][$l]."')";
+
+
+					$sql_com="SELECT completed from activity WHERE activity_name='".addslashes($_POST['rowC'.$newj][$l])."' AND status=1 ORDER BY activity_id DESC LIMIT 1";
+					$query_com=$this->db->query($sql_com);
+					$res_com = $query_com->row(); 
+					
+					 
+					if($res_com->completed){
+						$completed = $res_com->completed;
+					} else {
+						$completed ='';
+					}
+
+					 $sql_actiity_ins="INSERT INTO activity (activity_name,planned_quantity,actually_quantity,start_date,finish_date,assigned_person,resources,template_reference,project_id,dependent_on,last_modified,template_document,activity_status,activity_status_modified,comments,completed,uom) VALUES ('".addslashes($_POST['rowC'.$newj][$l])."','".$_POST['planned_quantity'][$l]."','".$_POST['actually_quantity'][$l]."','".$_POST['start_date'][$l]."','".$_POST['end_date'][$l]."','".$_POST['responsibilities'][$l]."','".$_POST['resources'][$l]."','".$_POST['template_reference'][$l]."','".$this->uri->segment('3')."','".$_POST['dependency'][$l]."',now(),'".$img_name."','".$_POST['activity_status'][$l]."','".$_POST['activity_status_modified'][$l]."','".$_POST['comments'][$l]."','".$completed."', '".$_POST['uom'][$l]."')";
 					$this->db->query($sql_actiity_ins);
 					
 					$autoid_activity=$this->db->insert_id();	

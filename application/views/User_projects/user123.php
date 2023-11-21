@@ -41,8 +41,8 @@
             <div class="form-group">
             <label>ODIF Time</label>
             <!--<input class="form-control" type="text" name="daterange" value="<?php echo $project_details['daterange']; ?>" placeholder="choose Time range" />-->
-            <div class="input-group date" id="timestart">
-                    <input type="text" class="form-control" name="daterange" value="<?php echo $project_details['daterange']; ?>">
+            <div class="input-group date" id="timestartodif">
+                    <input type="text" id="daterange" readonly class="form-control" name="daterange" value="<?php echo $project_details['daterange']; ?>">
                     <span class="input-group-addon">
                          <i class="fa fa-clock-o" aria-hidden="true"></i>
                     </span>

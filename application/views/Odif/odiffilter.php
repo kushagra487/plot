@@ -50,25 +50,28 @@
             </div>
         
         </div>
+        <?php //if($datediff <= 0) { ?>
          <div class="col-sm-8 col-md-7 col-md-offset-1 col-lg-6 col-lg-offset-1  col-xs-12">
          	<div class="row">
             	<div class="col-sm-6 col-xs-12">
                 <div class="perform_circle">
                 <h5 class="ft-24 text-center">Performance</h5>
-                <div class="circle_banja"><?php echo count($complete_activity); echo "/"; echo count($total_activity); ?></div>
+                <div class="circle_banja performance"><?php echo count($complete_activity); echo "/"; echo count($total_activity); $total_complete_activity = count($complete_activity); ?></div>
                 </div>
                 </div>
                 
                 <div class="col-sm-6 col-xs-12">
                 <div class="odif_circle">
                 <h5 class="ft-24 text-center">ODIF Score</h5>
-                <div class="circle_banja"><?php $cal = ceil((count($complete_activity)/count($total_activity))*100); ?><?php echo $cal."%"; ?></div>
+                <!-- <?php //echo count($complete_activity);die;?> -->
+                <div class="circle_banja score"><?php $cal = round((count($complete_activity)/count($total_activity))*100); ?><?php echo number_format($cal, 2)."%"; ?></div>
                 </div>
                 </div>
                 
                 
             </div>         
          </div>
+         <?php //} ?>
         
            <p class="clearfix"></p>
            <br>
@@ -99,14 +102,29 @@
 									<th>S. No.</th>
                                     <th>Mega Process</th>
                                      <th>Process</th>
+                                     <?php if($datediff > 0) { ?>
+                                      <th>Start Date & Time</th>
+                                      <?php } ?>
+                                      <?php if($datediff <= 0) { ?>
                                     <th>Activity</th>
+                                    <th>UOM</th>
                                     <th>Planned Quantity</th>
                                     <th>Actual Quantity</th>
+                                    <?php } ?>
                                     <th>Assigned Person</th>
-                                    <th>Start Date</th>
-									<th>Finish Date</th>
-									<th class="col-xs-1">Status</th>
+                                    <?php if($datediff <= 0) { ?>
+                                    <th>Start Date & Time</th>
+                                    
+									<th>Finish Date & Time</th>
+									                 
+                                    <th class="col-xs-1">Status</th>
                                     <th class="col-xs-1">Comments</th>
+                                    <?php } ?>
+                                     <?php if($datediff > 0) { ?>
+                                      <th>Planned Activities</th>
+                                      <th>Completed actvities</th>
+                                      <th>Score</th>
+                                    <?php } ?>
 								</tr>
 							</thead>
 							<tbody>
@@ -114,7 +132,8 @@
 									<?php 
 									//print_r($odif);	
 									
-									
+									$this->load->model("odif_model");
+                  $sum_total_activity = 0;
 				$sl=0; foreach($odif as $value){	
 					$sl++; 				
 					
@@ -136,17 +155,52 @@
 			}
 			
 					}
+
+
+
+
+
+          if(isset($_POST['odifsort'])){
+             $get_id =  $this->uri->segment('3');
+              // $datestring=$_POST['date'];	
+              $responsilbe_person=$_POST['responsilbe_person'];	
+              $start_date = explode(' ',$value['start_date'])[0];
+              $end_date = explode(' ',$value['finish_date'])[0];
+              
+             // if($datestring!=''){
+             $start_date = explode("/",$start_date);	
+              $sdate=$start_date[2]."-".$start_date[1]."-".$start_date[0];
+              
+              $end_date = explode("/",$end_date);	
+              $edate=$end_date[2]."-".$end_date[1]."-".$end_date[0];
+             // }
+
+             //echo $sdate;die;
+              $total_activity = $this->odif_model->get_odif_all_filter_range($get_id,$sdate,$edate,$value['assigned_person']);
+//  echo "Total".count($total_activity);
+             $complete_activity = $this->odif_model->get_odif_completed_filter_range($get_id,$sdate,$edate,$value['assigned_person']);						
+             //echo "Complete".count($complete_activity);
+              }
 			?>
 						<tr>
 												    <td><?php echo $sl;?></td>
                                                     <td><?php echo $value['mp_name'];?></td>
                                                     <td><?php echo $value['process_name'];?></td>
+                                                    <?php if($datediff > 0) { ?>
+                                                      <td><?php echo $value['start_date'];?></td>
+                                                    <?php } ?>
+                                                    <?php if($datediff <= 0) { ?>
                                                     <td><?php echo $value['activity_name'];?></td>
+                                                    <td><?php echo $value['uom']?></td>
                                                     <td><?php echo $value['planned_quantity']?></td>
 													                          <td><?php echo $value['actually_quantity']?></td>
+                                                    <?php } ?>
                                                     <td><?php echo $value['assigned_person'];?></td>
+                                                    <?php if($datediff <= 0) { ?>
                                                     <td><?php echo $value['start_date'];?></td>
+                                                   
 													<td><?php echo $value['finish_date'];?></td>
+                          
 												<td>
                                                  <?php if($value['activity_name']!=''){?>
                                                   <?php echo $value['activity_status'];?>
@@ -154,6 +208,12 @@
                                                         <input type="hidden" id="odifid" name="odif_id[<?php echo $sl-1; ?>]" value="<?php echo $value['activity_id'];?>"/>
 													</td>
                                                     <td><?php echo $value['comments']?></td>
+                                                    <?php } ?>
+                                                    <?php if($datediff > 0) { ?>
+                                                      <td><?php echo count($total_activity); $sum_total_activity =$sum_total_activity + count($total_activity);?></td>
+                                                      <td><?php echo  count($complete_activity); ?></td>
+                                                      <td><?php echo round((count($complete_activity) * 100)/count($total_activity),2).'%'; ?></td>
+                                                  <?php } ?>
 												</tr>
 								  <?php } ?>
 								
@@ -196,7 +256,7 @@
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <form method="post" action="<?php echo base_url()?>/wbs_list/share">
+      <form method="post" action="<?php echo base_url()?>/wbs_list/share_odif">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span> </button>
           <h4 class="modal-title" id="myModalLabel">Share ODIF Report</h4>
@@ -219,4 +279,14 @@
     </div>
   </div>
 </div>
-
+<?php if($datediff > 0) { ?>
+<script>
+  var str = '<?php echo $total_complete_activity."/".$sum_total_activity;?>';
+  var score = "<?php $cal = round(($total_complete_activity/$sum_total_activity)*100); ?><?php echo number_format($cal, 2)."%"; ?>";
+  $(document).ready(function(){
+    console.log(<?php echo $total_complete_activity; ?>);
+    $('.performance').html(str);
+    $('.score').html(score);
+  });
+</script>
+<?php } ?>
