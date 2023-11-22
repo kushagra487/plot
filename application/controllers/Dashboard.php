@@ -6,6 +6,7 @@
 			parent::__construct();
 			$this->load->model('dashboard_model');
 			$this->load->model('logo_model');
+			$this->load->model('projects_model');
 			error_reporting(0);
 		}
 		
@@ -89,8 +90,7 @@
 		}
 		
 		public function index(){
-		
-				
+							
 			$loggedin = $this->logged_in();
 			if($loggedin == TRUE) {
 			
@@ -255,10 +255,11 @@
 				
 						
 				$data['all_members']=$all_members=$this->dashboard_model->get_all_members_project($start_date,$finish_date,$project_filterid);
+				$reporting_manager=$this->projects_model->check_reporting_manager($user_id);
+				$data['reporting_manager']=$reporting_manager;
 		
 
-			
-							
+					
 				if($role == 'Admin'){
 					$this->load->view('header', $data);
 					$this->load->view('admin_sidebar', $data);

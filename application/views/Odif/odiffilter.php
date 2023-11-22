@@ -3,6 +3,11 @@
  <span class="pull-right"><a href="<?php echo base_url()?>wbs_list/index/<?php echo $this->uri->segment('3')?>">Back</a></span>
 	<div>
   <div class="clearfix"></div>
+  <div class="row"><div class="col-md-6 col-xs-6">
+        <div class="curve_btn green_btn">
+                    <a href="<?php echo base_url()?>odif/excelDownload?projectid=<?php echo $this->uri->segment('3')?>&assigned_person=<?php echo $this->session->userdata('responsible_person');?>">Download ODIF Report</a>
+                  </div>
+        </div></div>
   <div class="row" style="margin-top:20px;">
   <div class="search_area">
   <form method="post" action="" autocomplete="off" >
@@ -82,7 +87,7 @@
                     
                    <p style="color:red !important;" id="ajaxmsg"></p>
 					<ul class="nav navbar-right panel_toolbox wbs-button pro_page">
-                    <li>
+                   <li>
                     <div class="curve_btn green_btn">
           <a href="#" class="share btn-lg" title="share" id="import_wbs" data-toggle="modal" data-target="#myModal"><i class="fa fa-share-alt" aria-hidden="true"></i> Share</a></div></li>
                     </ul>
@@ -251,7 +256,8 @@
         
             
 </div>
-
+<input type="hidden" id="sum_total_activity" name="sum_total_activity" value="<?php echo $sum_total_activity; ?>" />
+<input type="hidden" id="total_complete_activity" name="total_complete_activity" value="<?php echo $total_complete_activity;?>" />
 
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -279,14 +285,3 @@
     </div>
   </div>
 </div>
-<?php if($datediff > 0) { ?>
-<script>
-  var str = '<?php echo $total_complete_activity."/".$sum_total_activity;?>';
-  var score = "<?php $cal = round(($total_complete_activity/$sum_total_activity)*100); ?><?php echo number_format($cal, 2)."%"; ?>";
-  $(document).ready(function(){
-    console.log(<?php echo $total_complete_activity; ?>);
-    $('.performance').html(str);
-    $('.score').html(score);
-  });
-</script>
-<?php } ?>

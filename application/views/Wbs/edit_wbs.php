@@ -248,7 +248,15 @@ ini_set("memory_limit","1000M");
                   <input type="hidden" name="project_start_date" id="project_start_date" value="<?php echo date("d/m/Y",strtotime($project_details['start_date']))?>">
                     <input type="hidden" name="project_end_date" id="project_end_date" value="<?php echo date("d/m/Y",strtotime($project_details['end_date']))?>">
                   <?php  if($project_details['status']==0) { ?>
-                     <button class="btn" value="Save"  type="submit" name="btn_save" style="background: #1d9f75!important;
+                     <div class="container" style='margin-top:10px;'>
+  <div class="form-group">
+    <div class="form-check">
+      <input type="checkbox" class="form-check-input" name='reporting_manager_mail' id='reporting_manager_mail'>
+      <label class="form-check-label" for="exampleCheckbox">Send Mail To Reporting Manager</label>
+    </div>
+  </div>
+                  </div>
+                     <button id="save_btn" class="btn" value="Save"  type="submit" name="btn_save" style="background: #1d9f75!important;
     padding: 4px 8px;
     color: #fff;
     border: none;
@@ -272,3 +280,28 @@ ini_set("memory_limit","1000M");
             
 
 		</div>
+    <script>
+      $('#save_btn').click(function(){
+       // alert("test");
+       var project_id= $("input[name=project_id]").val();
+       var reportingManagerMail = $("#reporting_manager_mail").is(':checked');
+       
+       if(reportingManagerMail) {
+         $.ajax({
+         url: '<?php echo base_url("Edit_wbs/send_wbs_email"); ?>/' +project_id,
+         type: 'POST',
+         dataType: 'json',
+         success: function (data) {
+            // Handle the success response
+            console.log(data);
+         },
+         error: function (xhr, status, error) {
+            // Handle the error response
+            console.error(xhr.responseText);
+         }
+      });
+       }
+       
+
+      });
+      </script>

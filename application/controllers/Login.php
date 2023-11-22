@@ -59,9 +59,8 @@
 		
 		public function logout() {
 			
-			$this->session->set_userdata('login_flag', FALSE);
-			$this->session->set_userdata('user_id', FALSE);
-			$this->session->set_userdata('role', FALSE);
+			// Destroy all session data
+			$this->session->sess_destroy();
 			redirect(base_url().'login/');
 		}
 	}

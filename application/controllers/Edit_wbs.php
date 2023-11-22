@@ -265,7 +265,7 @@
 					}
 					//echo "<br>bb-->".$img_name;	
 					$actid_unique++;
-					$sql_com="SELECT completed from activity WHERE activity_name='".addslashes($_POST['rowC'.$newj][$l])."' AND status=1 ORDER BY activity_id DESC LIMIT 1";
+					$sql_com="SELECT completed,temp_actual_quantity from activity WHERE activity_name='".addslashes($_POST['rowC'.$newj][$l])."' AND status=1 ORDER BY activity_id DESC LIMIT 1";
 					$query_com=$this->db->query($sql_com);
 					$res_com = $query_com->row(); 
 					
@@ -275,10 +275,33 @@
 					} else {
 						$completed =  '';
 					}
-					$sql_actiity_ins="INSERT INTO activity (activity_name,planned_quantity,actually_quantity,start_date,finish_date,assigned_person,resources,template_reference,project_id,dependent_on,last_modified,template_document,activity_status,activity_status_modified,comments,completed,uom) VALUES ('".addslashes($_POST['rowC'.$newj][$l])."','".$_POST['planned_quantity'][$l]."','".$_POST['actually_quantity'][$l]."','".$_POST['start_date'][$l]."','".$_POST['end_date'][$l]."','".$_POST['responsibilities'][$l]."','".$_POST['resources'][$l]."','".$_POST['template_reference'][$l]."','".$this->uri->segment('3')."','".$_POST['dependency'][$l]."',now(),'".$img_name."','".$_POST['activity_status'][$l]."','".$_POST['activity_status_modified'][$l]."','".$_POST['comments'][$l]."','".$completed."','".$_POST['uom'][$l]."')";
+					
+					//$sql_actiity_ins="INSERT INTO activity (activity_name,planned_quantity,actually_quantity,start_date,finish_date,assigned_person,resources,template_reference,project_id,dependent_on,last_modified,template_document,activity_status,activity_status_modified,comments,completed,uom) VALUES ('".addslashes($_POST['rowC'.$newj][$l])."','".$_POST['planned_quantity'][$l]."','".$_POST['actually_quantity'][$l]."','".$_POST['start_date'][$l]."','".$_POST['end_date'][$l]."','".$_POST['responsibilities'][$l]."','".$_POST['resources'][$l]."','".$_POST['template_reference'][$l]."','".$this->uri->segment('3')."','".$_POST['dependency'][$l]."',now(),'".$img_name."','".$_POST['activity_status'][$l]."','".$_POST['activity_status_modified'][$l]."','".$_POST['comments'][$l]."','".$completed."','".$_POST['uom'][$l]."')";
+					$sql_actiity_ins="INSERT INTO activity (activity_name,planned_quantity,actually_quantity";
+					
+					if($res_com->temp_actual_quantity && !empty($res_com->temp_actual_quantity)){
+						$sql_actiity_ins .=",temp_actual_quantity";
+					}
+					$sql_actiity_ins.=",start_date,finish_date,assigned_person,resources,template_reference,project_id,dependent_on,last_modified,template_document,activity_status,activity_status_modified,comments,completed,uom) VALUES ('".addslashes($_POST['rowC'.$newj][$l])."','".$_POST['planned_quantity'][$l]."','".$_POST['actually_quantity'][$l]."'";
+				
+					if($res_com->temp_actual_quantity && !empty($res_com->temp_actual_quantity)){
+						$sql_actiity_ins .=",'".$res_com->temp_actual_quantity."'";
+					}
+					
+					$sql_actiity_ins .=",'".$_POST['start_date'][$l]."','".$_POST['end_date'][$l]."','".$_POST['responsibilities'][$l]."','".$_POST['resources'][$l]."','".$_POST['template_reference'][$l]."','".$this->uri->segment('3')."','".$_POST['dependency'][$l]."',now(),'".$img_name."','".$_POST['activity_status'][$l]."','".$_POST['activity_status_modified'][$l]."','".$_POST['comments'][$l]."','".$completed."','".$_POST['uom'][$l]."')";
+
 					$this->db->query($sql_actiity_ins);
 					
 					$autoid_activity=$this->db->insert_id();	
+					
+					// For job card
+					$job_array = [];
+					$job_array['activity_id'] = $autoid_activity;
+					$job_array['planned_quantity']= ($_POST['planned_quantity'][$l]-$_POST['actually_quantity'][$l]);
+					$job_array['actually_quantity']= '0';
+					$job_array['created_date'] = date('Y-m-d'); 
+					$this->db->insert('job_card', $job_array); 
+					
 					
 					$one_minus=$newj-1;					
 					$values=$this->wbs_list_model->findme($_POST['rowC'.$one_minus],$l-1);
@@ -586,7 +609,7 @@
 						$img_name =$_POST['previous_document'][$l];	
 					}
 					$actid_unique++;
-					$sql_com="SELECT completed from activity WHERE activity_name='".addslashes($_POST['rowC'.$newj][$l])."' AND status=1 ORDER BY activity_id DESC LIMIT 1";
+					$sql_com="SELECT completed,temp_actual_quantity from activity WHERE activity_name='".addslashes($_POST['rowC'.$newj][$l])."' AND status=1 ORDER BY activity_id DESC LIMIT 1";
 					$query_com=$this->db->query($sql_com);
 					$res_com = $query_com->row(); 
 					
@@ -597,11 +620,29 @@
 						$completed ='';
 					}
 
-					 $sql_actiity_ins="INSERT INTO activity (activity_name,planned_quantity,actually_quantity,start_date,finish_date,assigned_person,resources,template_reference,project_id,dependent_on,last_modified,template_document,activity_status,activity_status_modified,comments,completed, uom) VALUES ('".addslashes($_POST['rowC'.$newj][$l])."','".$_POST['planned_quantity'][$l]."','".$_POST['actually_quantity'][$l]."','".$_POST['start_date'][$l]."','".$_POST['end_date'][$l]."','".$_POST['responsibilities'][$l]."','".$_POST['resources'][$l]."','".$_POST['template_reference'][$l]."','".$this->uri->segment('3')."','".$_POST['dependency'][$l]."',now(),'".$img_name."','".$_POST['activity_status'][$l]."','".$_POST['activity_status_modified'][$l]."','".$_POST['comments'][$l]."','".$completed."', '".$_POST['uom'][$l]."')";
+					$sql_actiity_ins="INSERT INTO activity (activity_name,planned_quantity,actually_quantity";
+					if($res_com->temp_actual_quantity && !empty($res_com->temp_actual_quantity)){
+						$sql_actiity_ins .=",temp_actual_quantity";
+					}
+					$sql_actiity_ins .=",start_date,finish_date,assigned_person,resources,template_reference,project_id,dependent_on,last_modified,template_document,activity_status,activity_status_modified,comments,completed, uom) VALUES ('".addslashes($_POST['rowC'.$newj][$l])."','".$_POST['planned_quantity'][$l]."','".$_POST['actually_quantity'][$l]."'";
+					
+					 if($res_com->temp_actual_quantity && !empty($res_com->temp_actual_quantity)){
+						$sql_actiity_ins .=",'".$res_com->temp_actual_quantity."'";
+					}
+					
+					$sql_actiity_ins .=",'".$_POST['start_date'][$l]."','".$_POST['end_date'][$l]."','".$_POST['responsibilities'][$l]."','".$_POST['resources'][$l]."','".$_POST['template_reference'][$l]."','".$this->uri->segment('3')."','".$_POST['dependency'][$l]."',now(),'".$img_name."','".$_POST['activity_status'][$l]."','".$_POST['activity_status_modified'][$l]."','".$_POST['comments'][$l]."','".$completed."', '".$_POST['uom'][$l]."')";
 					$this->db->query($sql_actiity_ins);
 					
 					$autoid_activity=$this->db->insert_id();	
 					
+					// For job card
+					$job_array = [];
+					$job_array['activity_id'] = $autoid_activity;
+					$job_array['planned_quantity']= ($_POST['planned_quantity'][$l]-$_POST['actually_quantity'][$l]);
+					$job_array['actually_quantity']= '0';
+					$job_array['created_date'] = date('Y-m-d'); 
+					$this->db->insert('job_card', $job_array); 
+
 					$one_minus=$newj-1;					
 					$values=$this->wbs_list_model->findme($_POST['rowC'.$one_minus],$l-1);
 					
@@ -912,7 +953,7 @@
 					$actid_unique++;
 
 
-					$sql_com="SELECT completed from activity WHERE activity_name='".addslashes($_POST['rowC'.$newj][$l])."' AND status=1 ORDER BY activity_id DESC LIMIT 1";
+					$sql_com="SELECT completed,temp_actual_quantity from activity WHERE activity_name='".addslashes($_POST['rowC'.$newj][$l])."' AND status=1 ORDER BY activity_id DESC LIMIT 1";
 					$query_com=$this->db->query($sql_com);
 					$res_com = $query_com->row(); 
 					
@@ -923,10 +964,25 @@
 						$completed ='';
 					}
 
-					 $sql_actiity_ins="INSERT INTO activity (activity_name,planned_quantity,actually_quantity,start_date,finish_date,assigned_person,resources,template_reference,project_id,dependent_on,last_modified,template_document,activity_status,activity_status_modified,comments,completed,uom) VALUES ('".addslashes($_POST['rowC'.$newj][$l])."','".$_POST['planned_quantity'][$l]."','".$_POST['actually_quantity'][$l]."','".$_POST['start_date'][$l]."','".$_POST['end_date'][$l]."','".$_POST['responsibilities'][$l]."','".$_POST['resources'][$l]."','".$_POST['template_reference'][$l]."','".$this->uri->segment('3')."','".$_POST['dependency'][$l]."',now(),'".$img_name."','".$_POST['activity_status'][$l]."','".$_POST['activity_status_modified'][$l]."','".$_POST['comments'][$l]."','".$completed."', '".$_POST['uom'][$l]."')";
+					 $sql_actiity_ins="INSERT INTO activity (activity_name,planned_quantity,actually_quantity";
+					 if($res_com->temp_actual_quantity && !empty($res_com->temp_actual_quantity)){
+						$sql_actiity_ins .=",temp_actual_quantity";
+					}
+					$sql_actiity_ins .=",start_date,finish_date,assigned_person,resources,template_reference,project_id,dependent_on,last_modified,template_document,activity_status,activity_status_modified,comments,completed,uom) VALUES ('".addslashes($_POST['rowC'.$newj][$l])."','".$_POST['planned_quantity'][$l]."','".$_POST['actually_quantity'][$l]."'";
+					 if($res_com->temp_actual_quantity && !empty($res_com->temp_actual_quantity)){
+						$sql_actiity_ins .=",'".$res_com->temp_actual_quantity."'";
+					}
+					$sql_actiity_ins .=",'".$_POST['start_date'][$l]."','".$_POST['end_date'][$l]."','".$_POST['responsibilities'][$l]."','".$_POST['resources'][$l]."','".$_POST['template_reference'][$l]."','".$this->uri->segment('3')."','".$_POST['dependency'][$l]."',now(),'".$img_name."','".$_POST['activity_status'][$l]."','".$_POST['activity_status_modified'][$l]."','".$_POST['comments'][$l]."','".$completed."', '".$_POST['uom'][$l]."')";
 					$this->db->query($sql_actiity_ins);
 					
 					$autoid_activity=$this->db->insert_id();	
+					// For job card
+					$job_array = [];
+					$job_array['activity_id'] = $autoid_activity;
+					$job_array['planned_quantity']= ($_POST['planned_quantity'][$l]-$_POST['actually_quantity'][$l]);
+					$job_array['actually_quantity']= '0';
+					$job_array['created_date'] = date('Y-m-d'); 
+					$this->db->insert('job_card', $job_array); 
 					
 					$one_minus=$newj-1;					
 					$values=$this->wbs_list_model->findme($_POST['rowC'.$one_minus],$l-1);
@@ -1056,5 +1112,58 @@
 			$tm_list = $this->input->post('tm_list');
 			$this->wbs_list_model->update_tm($tmper,$tm_list); 
 		}
+
+		//function to send email to the reportng manager
+		public function send_wbs_email(){
+			$project_id = $this->uri->segment(3);
+			//fetch project name 
+			$this->db->select('project_name');
+			$this->db->from('project_name');
+			$this->db->where("project_id", $project_id);
+			$query1 = $this->db->get();
+			$project_data = $query1->row_array();
+			$project_name = $project_data['project_name'];
+
+			$user_id = $this->session->userdata['user_id'];
+		 
+			// Fetch reporting manager from the database
+			$this->db->select('reporting_manager');
+			$this->db->from('login');
+			$this->db->where("user_id", $user_id);
+			$query = $this->db->get();
+			$reporting_manager_data = $query->row_array();
+			$reporting_manager = $reporting_manager_data['reporting_manager'];
+		 
+			// Insert data into the project_mail_reports table
+			$data = array(
+			   'project_id' => $project_id,
+			   'reporting_manager' => $reporting_manager,
+			   'project_name' => $project_name,
+			   'user' => $user_id,
+			   'created_at' => $this->db->query('SELECT NOW() as now')->row()->now
+			);
+		 
+			$insert_data=$this->db->insert('project_mail_reports', $data);
+
+			if($insert_data){
+
+				// Send email
+				$this->load->library('email');
+				$this->email->from('plot@pboplus.com');
+				$this->email->to($reporting_manager);
+				$this->email->subject('Wbs Approval Request');
+				$message="Hi"."<br>"."you have a Wbs Request to Approve from '".$user_id."' ";
+				$this->email->message($message);
+				
+				if ($this->email->send()) {
+					$response = array('status' => 'success', 'message' => 'Data saved and email sent successfully');
+				} else {
+					$response = array('status' => 'error', 'message' => $this->email->print_debugger());
+				}
+			}
+		 
+			$response = array('user_id'=>$user_id,'project_id'=>$project_id, 'reporting_manager'=>$reporting_manager);
+			print_r($response);
+		 }
 	}
 ?>

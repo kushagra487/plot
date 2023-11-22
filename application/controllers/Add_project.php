@@ -43,6 +43,8 @@
 				$data['pm_details'] = $this->projects_model->view_pm_details();
 				$data['tm_details'] = $this->projects_model->view_tm_details();
 				if($role == 'Admin'){
+					$reporting_manager=$this->projects_model->check_reporting_manager($user_id);
+					$data['reporting_manager']=$reporting_manager;
 					
 					//echo "hello";die;
 					if(isset($_POST['project_name'])){
@@ -173,6 +175,8 @@
 					}
 				}
 				elseif($role == 'Editor'){
+					$reporting_manager=$this->projects_model->check_reporting_manager($user_id);
+					$data['reporting_manager']=$reporting_manager;
 					if(isset($_POST['project_name'])){}
 					elseif(isset($_POST['update_users'])){
 						$config['upload_path'] = './project_uploads/';
@@ -263,6 +267,8 @@
 					}
 				}
 				elseif($role == 'Project Manager'){
+					$reporting_manager=$this->projects_model->check_reporting_manager($user_id);
+					$data['reporting_manager']=$reporting_manager;
 					//print_r($_POST);
 					if(isset($_POST['project_name'])){
 						
@@ -412,6 +418,8 @@
 						$admin_editor_assigned_project[] = $this->projects_model->view_projects_details_id($project_id);
 					}
 					$data['project_details'] = $admin_editor_assigned_project;
+					$reporting_manager=$this->projects_model->check_reporting_manager($user_id);
+					$data['reporting_manager']=$reporting_manager;
 					
 					//print_r($data);
 							
@@ -1050,6 +1058,84 @@
 		}
 			
 		}
+		
+		public function approve_wbs_request($project_id){
+			//echo $project_id;die;
+			$data = array(
+				'reporting_status' => '1',
+			);
+		
+			$this->db->where('project_id', $project_id);
+			$this->db->order_by('id', 'DESC'); // Assuming 'id' is the primary key of your table
+			$this->db->limit(1);
+			$update_status=$this->db->update('project_mail_reports', $data);
+
+			//fetch user id from databse
+			$this->db->select('user');
+			$this->db->from('project_mail_reports');
+			$this->db->where('project_id', $project_id);
+			$data = $this->db->get()->row_array();
+			//print_r($data);die;
+			$user_id = $data['user'];
+
+			if($update_status){
+
+				// Send email
+				$this->load->library('email');
+				$this->email->from('plot@pboplus.com');
+				$this->email->to($user_id);
+				$this->email->subject('Wbs Approved');
+				$message="Hi"."<br>"."Your wbs approval request has been Approved by your reporting manager.";
+				$this->email->message($message);
+				
+				if ($this->email->send()) {
+					$response = array('status' => 'success', 'message' => 'Data saved and email sent successfully');
+				} else {
+					$response = array('status' => 'error', 'message' => $this->email->print_debugger());
+				}
+			}
+			$this->session->set_flashdata('success','WBS Request Approved.');	
+			redirect(base_url().'wbs_list/index/'.$project_id);
+		}
+
+		public function reject_wbs_request($project_id){
+			$data = array(
+				'reporting_status' => '2',
+			);
+		
+			$this->db->where('project_id', $project_id);
+			$this->db->order_by('id', 'DESC'); // Assuming 'id' is the primary key of your table
+        	$this->db->limit(1);
+			$update_status=$this->db->update('project_mail_reports', $data);
+
+			//fetch user id from databse
+			$this->db->select('user');
+			$this->db->from('project_mail_reports');
+			$this->db->where('project_id', $project_id);
+			$data = $this->db->get()->row_array();
+			//print_r($data);die;
+			$user_id = $data['user'];
+
+			if($update_status){
+
+				// Send email
+				$this->load->library('email');
+				$this->email->from('plot@pboplus.com');
+				$this->email->to($user_id);
+				$this->email->subject('Wbs Rejected');
+				$message="Hi"."<br>"."Your wbs approval request has been rejected by your reporting manager. You can now upload new wbs.";
+				$this->email->message($message);
+				
+				if ($this->email->send()) {
+					$response = array('status' => 'success', 'message' => 'Data saved and email sent successfully');
+				} else {
+					$response = array('status' => 'error', 'message' => $this->email->print_debugger());
+				}
+			}
+			$this->session->set_flashdata('success','WBS Request Rejected.');	
+			redirect(base_url().'wbs_list/index/'.$project_id);
+		}
+		
 		
 		
 	}

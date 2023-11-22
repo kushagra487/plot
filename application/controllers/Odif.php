@@ -1088,344 +1088,342 @@ If you do not wish to receive any further communications, please unsubscribe her
 		}
 
 		
-
 		
+	public function send_odif_report(){
+		error_reporting(E_ALL);
+		$this->load->library('email');
+		$this->load->library('parser');
+		$all_projects=$this->odif_model->get_all_projects();
+		$message = null;
+		$message_pm = null;
 
-		public function send_odif_report(){
-			error_reporting(E_ALL);
-			$this->load->library('email');
-			$this->load->library('parser');
-			$all_projects=$this->odif_model->get_all_projects();//print_r($all_projects);exit;
-			$message = null;
-			$message_pm = null;
+		foreach($all_projects as $all_project){
+			$odif=$this->odif_model->get_todays_odif($all_project['project_id']);
 
-			foreach($all_projects as $all_project){
-				$odif=$this->odif_model->get_todays_odif($all_project['project_id']);
+			$p_details=$this->projects_model->view_projects_details_id($all_project['project_id']);
+
+			$user_details= $this->users_model->get_user_details_byemail($p_details['user_id']);
+
+			$powner=$this->projects_model->view_projects_details_id($all_project['project_id']);
+			$currentDate = date('d-m-Y');
+			//echo $currentDate;die;
+			$count_of_actual_activities=0;
+			$count_of_total_activities=0;
+			foreach($odif as $value){
+				$count_of_actual_activities=$count_of_actual_activities+$value['actually_quantity'];
+				$count_of_total_activities=$count_of_total_activities+$value['planned_quantity'];
+			}
+			// echo $count_of_actual_activities;
+			// echo "<br>";
+			// echo $count_of_total_activities;die;
+			$performance = 0;
+			$odif_score = 0;
+
+			if($count_of_total_activities > 0) {
+				$performance=$count_of_actual_activities.'/'.$count_of_total_activities;
+				$odif_score=($count_of_actual_activities/$count_of_total_activities)*100;
+				$odif_score=round($odif_score,2).'%';
+			}
+
+			$assiged_tm=$this->wbs_model->get_assiged_tm_details($all_project['project_id']);
+			$assiged_pm=$this->wbs_model->get_assiged_pm_details($all_project['project_id']);
+			$reminder_time = $this->odif_model->get_project_reminder_time($all_project['project_id']);
+			$reminder_time = $reminder_time->daterange;
+
+			// Assuming $reminder_time is in HH:mm format
+			$current_time = strtotime(date("Y-m-d $reminder_time"));
+
+			// Calculate the next run time by adding 5 minutes to the current time
+			$fiveMinutesAfter = $current_time . ' +5 minutes';
+
+			// Get the current server time
+			$server_time = strtotime(date("Y-m-d H:i"));	
+
+			/**
+			* For dev server if project id is 315 then only send mail
+			*/
+			if($all_project['project_id'] == 315 || $all_project['project_id'] == 188) {	
+
+				echo '<br>Server Time-->'.date("Y-m-d H:i", strtotime(date("Y-m-d H:i")));
+				echo '<br>Current Time-->'.date("Y-m-d H:i", $current_time);
+				echo '<br>Five Minutes After-->'.date("Y-m-d H:i", $fiveMinutesAfter + 300);
+
+				if($server_time > $current_time && $server_time < $fiveMinutesAfter + 300){	
+
+					echo '<br>Inside-->';
+					print_r($assiged_tm);print_r($assiged_pm);
+
+					foreach($assiged_tm as $assiged_tm){
+								 
+						$activity_start_today_member=$this->odif_model->odif_report_odif_userwise('project_id',$all_project['project_id'],$assiged_tm['tm_list']);
+						$total_activities=$this->odif_model->total_activity_userwise($all_project['project_id'],$assiged_tm['tm_list']);
+						//echo $total_activities.'<br>';
+						$complete_activity=$this->odif_model->complete_activity_userwise($all_project['project_id'],$assiged_tm['tm_list']);
+		
+		
+						$message.="<link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800' rel='stylesheet'>
+						<body>
+						<style>
+						*{
+						font-family: 'Open Sans', sans-serif;    
+						padding:0;
+						margin:0;    
+						}
+						</style>
+						<table class='table' style='width:700px;max-width:100%; margin:0 auto;' border='0' cellpadding='0' cellspacing='0' bgcolor='#1d9f75'>
+						<tbody>
+						<tr>
+						<td align='center'><img src='".base_url()."images/logo2.png' alt='Algn'/></td>
+						</tr>
+						<tr>
+						<td><p>&nbsp;</p></td>
+						</tr>
+						<tr>
+						<td align='center'>
+						<table class='table' cellpadding='10' cellspacing='10' border='0' bgcolor='#ffffff' width='95%'>
+						<tbody>
+						<tr>
+						<td><h4 style='color:#1d9f75;font-size:20px;font-weight:normal;padding:0px;margin:0;'>
+						Project Name:<a style='text-decoration:none;' href='".base_url()."/wbs_list/index/".$p_details['project_id']."'>".$p_details['project_name']."</a>
+						</h4></td>
+						</tr>
+						<tr>
+						<td><h4 style='color:#1d9f75;font-size:20px;font-weight:normal;padding:0px;margin:0;'>
+						Project Owner: ".$powner['name']." </h4></td>
+						</tr>
+						<tr>
+						<td style='color:#1d9f75;'>Date: ".$currentDate."</td>
+						</tr>
+						<tr>
+						<td style='color:#1d9f75;'>Performance: ".$performance."</td>
+						</tr>
+						<tr>
+						<td style='color:#1d9f75;'>ODIF Score: ".$odif_score."</td>
+						</tr>
+						<tr>
+						<td><h4 style='border-bottom:1px solid #ccc;color:#1d9f75;font-size:20px;font-weight:normal;padding-bottom:5px;'>ODIF Report</h4></td>
+						</tr>
+						<tr>
+						<td style='    border: 1px solid #ddd;'>
+						<table class='table' cellpadding='10' cellspacing='0' border='0' bgcolor='#ffffff' width='100%'>
+						<thead>
+						<tr>
+						<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>S. NO.</th>
+						<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>MEGA PROCESS</th>
+						<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>PROCESS</th>
+						<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>ACTIVITY</th>
+						<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>PLANNED QUANTITY</th>
+						<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>ACTUAL QUANTITY</th>
+						<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>START DATE</th>
+						<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>FINISH DATE</th>
+						<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>STATUS</th>
+						<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>COMMENTS</th>
+						</tr>
+						</thead>
+						<tbody>";
+		
+						$sl=0;
+						foreach($odif as $value){
+						$sl++;
+		
+						if($value['activity_status']==0) {
+						$status='0';
+						}
+						elseif($value['activity_status']==1) {
+						$status='0';
+						}                 
+		
+						$message.="<tr bgcolor='#f6f6f6'>
+						<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>".$sl."</td>
+						<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>".$value['mp_name']."</td>
+						<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>".$value['process_name']."</td>
+						<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>".$value['activity_name']."</td>
+						<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>".$value['planned_quantity']."</td>
+						<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>".$value['actually_quantity']."</td>
+						<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>".$value['start_date']."</td>
+						<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>".$value['finish_date']."</td>
+						<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>".$status."</td>
+						<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>".$value['comments']."</td>
+						</tr>";
+						}              
+		
+						$message.="</tbody>
+						</table>
+						</td>
+						</tr>
+						<tr>
+						<td><p>&nbsp;</p></td>
+						</tr>
+						<tr>
+						<td align='center' bgcolor='#f8f8f8' style='font-size:12px;padding:20px 0;line-height:15px;font-weight:500;'>
+						<p>You are receiving this email because you are requested with PLOT. <br>
+						If you do not wish to receive any further communications, please unsubscribe here<br> 
+						@ ".date("Y")."  PBOPlus Consulting Services Ltd. All rights reserved</p>
+						</td>
+						</tr>
+						</tbody>
+						</table>        
+						</td>
+						</tr>
+						<tr>
+						<td><p>&nbsp;</p></td>
+						</tr>
+						</tbody>
+						</table>
+						</body>";
+		
+						$this->email->clear();
+		
+						$config['mailtype'] = "html";
+						$config['useragent'] = 'CodeIgniter';
+						$config['protocol'] = 'smtp';
+						$this->email->initialize($config);
+						$this->email->set_newline("\r\n");
+						$this->email->from('plot@pboplus.com');
+						$this->email->to($assiged_tm['tm_list']);
+						$this->email->subject("PLOT ODIF Report");
+						$this->email->message($message);
+						$this->email->send();
+		
+		
+					}
+					foreach($assiged_pm as $assiged_pm){	
+		
+						$message_pm.="<link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800' rel='stylesheet'>
+						<body>
+						<style>
+						*{
+						font-family: 'Open Sans', sans-serif;    
+						padding:0;
+						margin:0;    
+						}
+						</style>
+						<table class='table' style='width:700px;max-width:100%; margin:0 auto;' border='0' cellpadding='0' cellspacing='0' bgcolor='#1d9f75'>
+						<tbody>
+						<tr>
+						<td align='center'><img src='".base_url()."images/logo2.png' alt='Algn'/></td>
+						</tr>
+						<tr>
+						<td><p>&nbsp;</p></td>
+						</tr>
+						<tr>
+						<td align='center'>
+						<table class='table' cellpadding='10' cellspacing='10' border='0' bgcolor='#ffffff' width='95%'>
+						<tbody>
+						<tr>
+						<td><h4 style='color:#1d9f75;font-size:20px;font-weight:normal;padding:0px;margin:0;'>
+						Project Name:<a style='text-decoration:none;' href='".base_url()."/wbs_list/index/".$p_details['project_id']."'>".$p_details['project_name']."</a>
+						</h4></td>
+						</tr>
+						<tr>
+						<td><h4 style='color:#1d9f75;font-size:20px;font-weight:normal;padding:0px;margin:0;'>
+						Project Owner: ".$powner['name']." </h4></td>
+						</tr>
+						<tr>
+						<td style='color:#1d9f75;'>Date: ".$currentDate."</td>
+						</tr>
+						<tr>
+						<td style='color:#1d9f75;'>Performance: ".$performance."</td>
+						</tr>
+						<tr>
+						<td style='color:#1d9f75;'>ODIF Score: ".$odif_score."</td>
+						</tr>
+						<tr>
+						<td><h4 style='border-bottom:1px solid #ccc;color:#1d9f75;font-size:20px;font-weight:normal;padding-bottom:5px;'>ODIF Report</h4></td>
+						</tr>
+						<tr>
+						<td style='    border: 1px solid #ddd;'>
+						<table class='table' cellpadding='10' cellspacing='0' border='0' bgcolor='#ffffff' width='100%'>
+						<thead>
+						<tr>
+						<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>S. NO.</th>
+						<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>MEGA PROCESS</th>
+						<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>PROCESS</th>
+						<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>ACTIVITY</th>
+						<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>PLANNED QUANTITY</th>
+						<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>ACTUAL QUANTITY</th>
+						<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>START DATE</th>
+						<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>FINISH DATE</th>
+						<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>STATUS</th>
+						<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>COMMENTS</th>
+						</tr>
+						</thead>
+						<tbody>";
+		
+						$sl=0;
+						foreach($odif as $value){
+						$sl++;
+		
+						if($value['activity_status']==0) {
+						$status='0';
+						}
+						elseif($value['activity_status']==1) {
+						$status='0';
+						}                 
+		
+						$message_pm.="<tr bgcolor='#f6f6f6'>
+						<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>".$sl."</td>
+						<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>".$value['mp_name']."</td>
+						<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>".$value['process_name']."</td>
+						<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>".$value['activity_name']."</td>
+						<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>".$value['planned_quantity']."</td>
+						<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>".$value['actually_quantity']."</td>
+						<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>".$value['start_date']."</td>
+						<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>".$value['finish_date']."</td>
+						<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>".$status."</td>
+						<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>".$value['comments']."</td>
+						</tr>";
+						}              
+		
+						$message_pm.="</tbody>
+						</table>
+						</td>
+						</tr>
+						<tr>
+						<td><p>&nbsp;</p></td>
+						</tr>
+						<tr>
+						<td align='center' bgcolor='#f8f8f8' style='font-size:12px;padding:20px 0;line-height:15px;font-weight:500;'>
+						<p>You are receiving this email because you are requested with PLOT. <br>
+						If you do not wish to receive any further communications, please unsubscribe here<br> 
+						@ ".date("Y")."  PBOPlus Consulting Services Ltd. All rights reserved</p>
+						</td>
+						</tr>
+						</tbody>
+						</table>        
+						</td>
+						</tr>
+						<tr>
+						<td><p>&nbsp;</p></td>
+						</tr>
+						</tbody>
+						</table>
+						</body>";
+		
+						echo "<br>aaa-->".$assiged_pm['pm_list'];	
+						$this->email->clear();
+						$config['mailtype'] = "html";
+						$config['useragent'] = 'CodeIgniter';
+						$config['protocol'] = 'smtp';
+						$this->email->initialize($config);
+						$this->email->set_newline("\r\n");
+						$this->email->from('plot@pboplus.com');
+						$this->email->to($assiged_pm['pm_list']);
+						$this->email->subject("PLOT ODIF Report");
+						$this->email->message($message_pm);
+						$this->email->send();	
+		
+		
+		
+		
+					}
+		
+				}//if server time 
+			}
 	
-				$p_details=$this->projects_model->view_projects_details_id($all_project['project_id']);
-
-				$user_details= $this->users_model->get_user_details_byemail($p_details['user_id']);
-
-				$powner=$this->projects_model->view_projects_details_id($all_project['project_id']);
-				$currentDate = date('d-m-Y');
-				//echo $currentDate;die;
-				$count_of_actual_activities=0;
-				$count_of_total_activities=0;
-				foreach($odif as $value){
-					$count_of_actual_activities=$count_of_actual_activities+$value['actually_quantity'];
-					$count_of_total_activities=$count_of_total_activities+$value['planned_quantity'];
-				}
-				// echo $count_of_actual_activities;
-				// echo "<br>";
-				// echo $count_of_total_activities;die;
-				$performance = 0;
-				$odif_score = 0;
-
-				if($count_of_total_activities > 0) {
-					$performance=$count_of_actual_activities.'/'.$count_of_total_activities;
-					$odif_score=($count_of_actual_activities/$count_of_total_activities)*100;
-					$odif_score=round($odif_score,2).'%';
-				}
-
-				$assiged_tm=$this->wbs_model->get_assiged_tm_details($all_project['project_id']);
-				$assiged_pm=$this->wbs_model->get_assiged_pm_details($all_project['project_id']);
-				$reminder_time = $this->odif_model->get_project_reminder_time($all_project['project_id']);
-				$reminder_time = $reminder_time->daterange;
-
-				// Assuming $reminder_time is in HH:mm format
-				$current_time = strtotime(date("Y-m-d $reminder_time"));
-
-				// Calculate the next run time by adding 5 minutes to the current time
-				$fiveMinutesAfter = $current_time . ' +5 minutes';
-
-				// Get the current server time
-				$server_time = strtotime(date("Y-m-d H:i"));	
-
-				/**
-				* For dev server if project id is 315 then only send mail
-				*/
-				if($all_project['project_id'] == 315 || $all_project['project_id'] == 188) {	
-
-					/*echo '<br>Server Time-->'.date("Y-m-d H:i", strtotime(date("Y-m-d H:i")));
-					echo '<br>Current Time-->'.date("Y-m-d H:i", $current_time);
-					echo '<br>Five Minutes After-->'.date("Y-m-d H:i", $fiveMinutesAfter + 300);*/
-
-					if($server_time > $current_time && $server_time < $fiveMinutesAfter + 300){	
-
-						foreach($assiged_tm as $assiged_tm){
-									 
-							$activity_start_today_member=$this->odif_model->odif_report_odif_userwise('project_id',$all_project['project_id'],$assiged_tm['tm_list']);
-							$total_activities=$this->odif_model->total_activity_userwise($all_project['project_id'],$assiged_tm['tm_list']);
-							//echo $total_activities.'<br>';
-							$complete_activity=$this->odif_model->complete_activity_userwise($all_project['project_id'],$assiged_tm['tm_list']);
-			
-			
-							$message.="<link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800' rel='stylesheet'>
-							<body>
-							<style>
-							*{
-							font-family: 'Open Sans', sans-serif;    
-							padding:0;
-							margin:0;    
-							}
-							</style>
-							<table class='table' style='width:700px;max-width:100%; margin:0 auto;' border='0' cellpadding='0' cellspacing='0' bgcolor='#1d9f75'>
-							<tbody>
-							<tr>
-							<td align='center'><img src='".base_url()."images/logo2.png' alt='Algn'/></td>
-							</tr>
-							<tr>
-							<td><p>&nbsp;</p></td>
-							</tr>
-							<tr>
-							<td align='center'>
-							<table class='table' cellpadding='10' cellspacing='10' border='0' bgcolor='#ffffff' width='95%'>
-							<tbody>
-							<tr>
-							<td><h4 style='color:#1d9f75;font-size:20px;font-weight:normal;padding:0px;margin:0;'>
-							Project Name:<a style='text-decoration:none;' href='".base_url()."/wbs_list/index/".$p_details['project_id']."'>".$p_details['project_name']."</a>
-							</h4></td>
-							</tr>
-							<tr>
-							<td><h4 style='color:#1d9f75;font-size:20px;font-weight:normal;padding:0px;margin:0;'>
-							Project Owner: ".$powner['name']." </h4></td>
-							</tr>
-							<tr>
-							<td style='color:#1d9f75;'>Date: ".$currentDate."</td>
-							</tr>
-							<tr>
-							<td style='color:#1d9f75;'>Performance: ".$performance."</td>
-							</tr>
-							<tr>
-							<td style='color:#1d9f75;'>ODIF Score: ".$odif_score."</td>
-							</tr>
-							<tr>
-							<td><h4 style='border-bottom:1px solid #ccc;color:#1d9f75;font-size:20px;font-weight:normal;padding-bottom:5px;'>ODIF Report</h4></td>
-							</tr>
-							<tr>
-							<td style='    border: 1px solid #ddd;'>
-							<table class='table' cellpadding='10' cellspacing='0' border='0' bgcolor='#ffffff' width='100%'>
-							<thead>
-							<tr>
-							<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>S. NO.</th>
-							<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>MEGA PROCESS</th>
-							<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>PROCESS</th>
-							<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>ACTIVITY</th>
-							<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>PLANNED QUANTITY</th>
-							<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>ACTUAL QUANTITY</th>
-							<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>START DATE</th>
-							<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>FINISH DATE</th>
-							<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>STATUS</th>
-							<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>COMMENTS</th>
-							</tr>
-							</thead>
-							<tbody>";
-			
-							$sl=0;
-							foreach($odif as $value){
-							$sl++;
-			
-							if($value['activity_status']==0) {
-							$status='0';
-							}
-							elseif($value['activity_status']==1) {
-							$status='0';
-							}                 
-			
-							$message.="<tr bgcolor='#f6f6f6'>
-							<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>".$sl."</td>
-							<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>".$value['mp_name']."</td>
-							<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>".$value['process_name']."</td>
-							<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>".$value['activity_name']."</td>
-							<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>".$value['planned_quantity']."</td>
-							<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>".$value['actually_quantity']."</td>
-							<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>".$value['start_date']."</td>
-							<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>".$value['finish_date']."</td>
-							<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>".$status."</td>
-							<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>".$value['comments']."</td>
-							</tr>";
-							}              
-			
-							$message.="</tbody>
-							</table>
-							</td>
-							</tr>
-							<tr>
-							<td><p>&nbsp;</p></td>
-							</tr>
-							<tr>
-							<td align='center' bgcolor='#f8f8f8' style='font-size:12px;padding:20px 0;line-height:15px;font-weight:500;'>
-							<p>You are receiving this email because you are requested with PLOT. <br>
-							If you do not wish to receive any further communications, please unsubscribe here<br> 
-							@ ".date("Y")."  PBOPlus Consulting Services Ltd. All rights reserved</p>
-							</td>
-							</tr>
-							</tbody>
-							</table>        
-							</td>
-							</tr>
-							<tr>
-							<td><p>&nbsp;</p></td>
-							</tr>
-							</tbody>
-							</table>
-							</body>";
-			
-							$this->email->clear();
-			
-							$config['mailtype'] = "html";
-							$config['useragent'] = 'CodeIgniter';
-							$config['protocol'] = 'smtp';
-							$this->email->initialize($config);
-							$this->email->set_newline("\r\n");
-							$this->email->from('plot@pboplus.com');
-							$this->email->to($assiged_tm['tm_list']);
-							$this->email->subject("PLOT ODIF Report");
-							$this->email->message($message);
-							$this->email->send();
-			
-			
-						}
-						foreach($assiged_pm as $assiged_pm){	
-			
-							$message_pm.="<link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800' rel='stylesheet'>
-							<body>
-							<style>
-							*{
-							font-family: 'Open Sans', sans-serif;    
-							padding:0;
-							margin:0;    
-							}
-							</style>
-							<table class='table' style='width:700px;max-width:100%; margin:0 auto;' border='0' cellpadding='0' cellspacing='0' bgcolor='#1d9f75'>
-							<tbody>
-							<tr>
-							<td align='center'><img src='".base_url()."images/logo2.png' alt='Algn'/></td>
-							</tr>
-							<tr>
-							<td><p>&nbsp;</p></td>
-							</tr>
-							<tr>
-							<td align='center'>
-							<table class='table' cellpadding='10' cellspacing='10' border='0' bgcolor='#ffffff' width='95%'>
-							<tbody>
-							<tr>
-							<td><h4 style='color:#1d9f75;font-size:20px;font-weight:normal;padding:0px;margin:0;'>
-							Project Name:<a style='text-decoration:none;' href='".base_url()."/wbs_list/index/".$p_details['project_id']."'>".$p_details['project_name']."</a>
-							</h4></td>
-							</tr>
-							<tr>
-							<td><h4 style='color:#1d9f75;font-size:20px;font-weight:normal;padding:0px;margin:0;'>
-							Project Owner: ".$powner['name']." </h4></td>
-							</tr>
-							<tr>
-							<td style='color:#1d9f75;'>Date: ".$currentDate."</td>
-							</tr>
-							<tr>
-							<td style='color:#1d9f75;'>Performance: ".$performance."</td>
-							</tr>
-							<tr>
-							<td style='color:#1d9f75;'>ODIF Score: ".$odif_score."</td>
-							</tr>
-							<tr>
-							<td><h4 style='border-bottom:1px solid #ccc;color:#1d9f75;font-size:20px;font-weight:normal;padding-bottom:5px;'>ODIF Report</h4></td>
-							</tr>
-							<tr>
-							<td style='    border: 1px solid #ddd;'>
-							<table class='table' cellpadding='10' cellspacing='0' border='0' bgcolor='#ffffff' width='100%'>
-							<thead>
-							<tr>
-							<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>S. NO.</th>
-							<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>MEGA PROCESS</th>
-							<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>PROCESS</th>
-							<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>ACTIVITY</th>
-							<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>PLANNED QUANTITY</th>
-							<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>ACTUAL QUANTITY</th>
-							<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>START DATE</th>
-							<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>FINISH DATE</th>
-							<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>STATUS</th>
-							<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>COMMENTS</th>
-							</tr>
-							</thead>
-							<tbody>";
-			
-							$sl=0;
-							foreach($odif as $value){
-							$sl++;
-			
-							if($value['activity_status']==0) {
-							$status='0';
-							}
-							elseif($value['activity_status']==1) {
-							$status='0';
-							}                 
-			
-							$message.="<tr bgcolor='#f6f6f6'>
-							<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>".$sl."</td>
-							<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>".$value['mp_name']."</td>
-							<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>".$value['process_name']."</td>
-							<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>".$value['activity_name']."</td>
-							<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>".$value['planned_quantity']."</td>
-							<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>".$value['actually_quantity']."</td>
-							<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>".$value['start_date']."</td>
-							<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>".$value['finish_date']."</td>
-							<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>".$status."</td>
-							<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>".$value['comments']."</td>
-							</tr>";
-							}              
-			
-							$message.="</tbody>
-							</table>
-							</td>
-							</tr>
-							<tr>
-							<td><p>&nbsp;</p></td>
-							</tr>
-							<tr>
-							<td align='center' bgcolor='#f8f8f8' style='font-size:12px;padding:20px 0;line-height:15px;font-weight:500;'>
-							<p>You are receiving this email because you are requested with PLOT. <br>
-							If you do not wish to receive any further communications, please unsubscribe here<br> 
-							@ ".date("Y")."  PBOPlus Consulting Services Ltd. All rights reserved</p>
-							</td>
-							</tr>
-							</tbody>
-							</table>        
-							</td>
-							</tr>
-							<tr>
-							<td><p>&nbsp;</p></td>
-							</tr>
-							</tbody>
-							</table>
-							</body>";
-			
-							//echo "<br>aaa-->".$assiged_pm['pm_list'];	
-							$this->email->clear();
-							$config['mailtype'] = "html";
-							$config['useragent'] = 'CodeIgniter';
-							$config['protocol'] = 'smtp';
-							$this->email->initialize($config);
-							$this->email->set_newline("\r\n");
-							$this->email->from('plot@pboplus.com');
-							$this->email->to($assiged_pm['pm_list']);
-							$this->email->subject("PLOT ODIF Report");
-							$this->email->message($message_pm);
-							$this->email->send();	
-			
-			
-			
-			
-						}
-			
-					}//if server time 
-				}
-			
-			
-			}//all projectts
-			
-			
-			
-			}//function 
+		}//all projectts
+		
+	}//
 
 public function odif_report_clients(){
 
@@ -2164,28 +2162,15 @@ If you do not wish to receive any further communications, please unsubscribe her
 
 		}	
 
-		public function generate_pdf() {
-			$get_id =  $this->uri->segment('3');	
-			if(isset($_POST['odifsort'])){
-				// echo 'test1';die;
-				$sdate = $_POST['sdate'];
-				$edate = $_POST['edate'];
-				echo 'sdate: '.$sdate;die;
-				$data['odif']=$this->odif_model->odif_filter($get_id,$sdate,$edate);
-			}else{
-				//  echo 'test2';die;
-			   $data['odif']=$this->odif_model->get_todays_odif($get_id);
-			 }
-			$this->load->view('Odif/generate_pdf', $data);
-		}
 
 		public function odiffilter() {		
 
 			$loggedin = $this->logged_in();
+			$this->session->set_userdata('responsible_person', '');
 
 			if($loggedin == TRUE) {
 
-				$get_id =  $this->uri->segment('3');		
+				$get_id =  $this->uri->segment('3');	
 
 				$user_id = $this->session->userdata['user_id'];
 
@@ -2287,6 +2272,9 @@ If you do not wish to receive any further communications, please unsubscribe her
 								 
 								$datestring=$_POST['date'];	
 								$responsilbe_person=$_POST['responsilbe_person'];	
+								if(isset($_POST['responsilbe_person'])) {
+									$this->session->set_userdata('responsible_person', $_POST['responsilbe_person']);
+								}
 								
 								if($datestring!=''){
 								$string=explode("-",$datestring);	
@@ -2359,7 +2347,10 @@ If you do not wish to receive any further communications, please unsubscribe her
 						if(isset($_POST['odifsort'])){
 
 							    $datestring=$_POST['date'];	
-								$responsilbe_person=$_POST['responsilbe_person'];	
+								$responsilbe_person=$_POST['responsilbe_person'];
+								if(isset($_POST['responsilbe_person'])) {
+									$this->session->set_userdata('responsible_person', $_POST['responsilbe_person']);
+								}	
 								
 								if($datestring!=''){
 								$string=explode("-",$datestring);	
@@ -2425,7 +2416,10 @@ If you do not wish to receive any further communications, please unsubscribe her
 						if(isset($_POST['odifsort'])){
 
 							    $datestring=$_POST['date'];	
-								$responsilbe_person=$_POST['responsilbe_person'];	
+								$responsilbe_person=$_POST['responsilbe_person'];
+								if(isset($_POST['responsilbe_person'])) {
+									$this->session->set_userdata('responsible_person', $_POST['responsilbe_person']);
+								}	
 								
 								if($datestring!=''){
 								$string=explode("-",$datestring);	
@@ -2493,7 +2487,10 @@ If you do not wish to receive any further communications, please unsubscribe her
 						if(isset($_POST['odifsort'])){
 
 							    $datestring=$_POST['date'];	
-								$responsilbe_person=$_POST['responsilbe_person'];	
+								$responsilbe_person=$_POST['responsilbe_person'];
+								if(isset($_POST['responsilbe_person'])) {
+									$this->session->set_userdata('responsible_person', $_POST['responsilbe_person']);
+								}	
 								
 								if($datestring!=''){
 								$string=explode("-",$datestring);	
@@ -2617,6 +2614,8 @@ If you do not wish to receive any further communications, please unsubscribe her
 			$this->email->set_newline("\r\n");
 			$this->email->from('plot@pboplus.com');
 			$this->email->to($recipient);
+
+			echo '<br>'.$recipient;
 		
 			$subject = 'ODIF Report Reminder';
 
@@ -2676,62 +2675,295 @@ If you do not wish to receive any further communications, please unsubscribe her
 			$this->email->send();
 		}
 
-		public function generatePdf(){
-			$loggedin = $this->logged_in();
-			$this->load->library('pdf');
-
-			if ($loggedin == TRUE) {
-				$get_id =  $this->uri->segment('3');
-				$user_id = $this->session->userdata['user_id'];
-				$role = $this->session->userdata['role'];
-				$uname = $this->session->userdata['name'];
-
-				$data['user_detail'] = $this->dashboard_model->view_details($user_id);
-				$data['project_details'] = $this->wbs_model->get_project_details($get_id);
-				$data['logo'] = $this->logo_model->view_logo();
-
-				// assigned PM list and TM list
-				$data['assign_pm_list'] = $this->projects_model->assign_pmlist($get_id);
-				$data['assign_tm_list'] = $this->projects_model->assign_tmlist($get_id);
-
-				if ($role != "Team Member") {
-					$data['total_activity'] = $this->odif_model->get_todays_odif_all($get_id);
-					$data['complete_activity'] = $this->odif_model->get_todays_odif_completed($get_id);
-					$data['odif_score'] = $this->odif_model->odif_score($get_id);
-				} else {
-					$data['total_activity'] = $this->odif_model->get_todays_odif_member_all($get_id, $user_id);
-					$data['complete_activity'] = $this->odif_model->get_todays_odif_member_completed($get_id, $user_id);
-					$data['odif_score'] = $this->odif_model->odif_score_members($get_id, $user_id);
+		public function excelDownload() {
+			// error_reporting(E_ALL);
+			$projectId = $this->input->get('projectid');
+			$assignedPerson = $this->input->get('assigned_person');
+			if($assignedPerson) {
+				$odif = $this->odif_model->get_todays_odif_member_all($projectId, $assignedPerson);
+				$test1 = $this->odif_model->get_todays_odif_member_all($projectId, $assignedPerson);
+				$test2 = $this->odif_model->get_todays_odif_member_completed($projectId, $assignedPerson);
+			}
+			else {
+				$odif = $this->odif_model->get_todays_odif($projectId);
+				$test1 = $this->odif_model->get_todays_odif_all($projectId);
+				$test2 = $this->odif_model->get_todays_odif_completed($projectId);
+			}
+			$p_details = $this->projects_model->view_projects_details_id($projectId);
+			$user_details = $this->users_model->get_user_details_byemail($p_details['user_id']);
+			$powner = $this->projects_model->view_projects_details_id($projectId);
+			$currentDate = date('d-m-Y');
+		
+			$count_of_completed_activities = 0;
+			foreach ($test2 as $value_2) {
+				$activity_status = $value_2['activity_status'];
+				if ($activity_status == '1') {
+					$count_of_completed_activities = $count_of_completed_activities + 1;
 				}
-
-				// Get user Comment
-				$data['getcomment'] = $this->wbs_list_model->get_comment($get_id);
-
-				if ($role == 'Admin') {
-					$data['odif'] = $this->odif_model->get_todays_odif($get_id);
-					$this->pdf->load_view('pdf/odif', $data);
-					$this->pdf->render();
-					$this->pdf->stream("jobcard.pdf");
-				} elseif ($role == 'Editor') {
-					$data['odif'] = $this->odif_model->get_todays_odif($get_id);
-					$this->pdf->load_view('pdf/odif', $data);
-					$this->pdf->render();
-					$this->pdf->stream("jobcard.pdf");
-				} elseif ($role == 'Project Manager') {
-					$data['odif'] = $this->odif_model->get_todays_odif($get_id);
-					$this->pdf->load_view('pdf/odif', $data);
-					$this->pdf->render();
-					$this->pdf->stream("jobcard.pdf");
-				} elseif ($role == 'Team Member') {
-					$data['odif'] = $this->odif_model->get_todays_odif_member($get_id, $this->session->userdata['user_id']);
-					$this->pdf->load_view('pdf/odif', $data);
-					$this->pdf->render();
-					$this->pdf->stream("jobcard.pdf");
+			}
+		
+			$count_of_activities = 0;
+			foreach ($odif as $value) {
+				$pq = $value['planned_quantity'];
+				$aq = $value['actually_quantity'];
+				$taq = $value['temp_actual_quantity'];
+				$job_card_sql = "SELECT * FROM job_card WHERE activity_id='" . $value['activity_id'] . "'";
+				$job_card = $this->db->query($job_card_sql)->row();
+				if ($job_card) {
+					$value['planned_quantity'] = $job_card->planned_quantity;
+					$value['actually_quantity'] = $job_card->actually_quantity;
+					if ($value['planned_quantity'] <= 0) {
+						continue;
+					}
 				}
-			} else {
-				redirect(base_url() . 'login/');
-			}	
+				$count_of_activities = $count_of_activities + 1;
+			}
+		
+			$performance = $count_of_completed_activities . '/' . $count_of_activities;
+			$odif_score = ($count_of_completed_activities / $count_of_activities) * 100;
+			$odif_score = round($odif_score, 2) . '%';
+		
+			// Set headers for force download
+			header('Content-Type: application/pdf');
+			header('Content-Disposition: attachment;filename="odif.xls"');
+			header('Cache-Control: max-age=0');
+			header('Cache-Control: must-revalidate');
+			header('Pragma: public');
+			ob_start();
+			$message .= "<link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800' rel='stylesheet'>
+			<body>
+				<style>
+					*{
+						font-family: 'Open Sans', sans-serif;	
+						padding:0;
+						margin:0;	
+					}
+				</style>
+				<table class='table' width='auto' style='margin:0 auto;' border='0' cellpadding='0' cellspacing='0' bgcolor='#1d9f75'>
+					<tbody>
+						<tr>
+							<td align='center'>
+								<table class='table' cellpadding='10' cellspacing='10' border='0' bgcolor='#ffffff' width='auto'>
+									<tbody>
+										<tr>
+											<td>Project Name:</td>
+											<td colspan='10'>" . $p_details['project_name'] . "</td>
+										</tr>
+										<tr>
+											<td>Project Owner:</td>
+											<td colspan='10'>" . $powner['name'] . "</td>
+										</tr>
+										<tr>
+											<td>Date: </td>
+											<td colspan='10'>" . $currentDate . "</td>
+										</tr>
+										<tr>
+											<td>Performance: </td>
+											<td colspan='10'>" . $performance . "</td>
+										</tr>
+										<tr>
+											<td>ODIF Score: </td>
+											<td colspan='10' align='left'>
+												" . $odif_score . "
+											</td>
+										</tr>
+										<tr>
+											<td colspan='10'><h4 style='border-bottom:1px solid #ccc;color:#1d9f75;font-size:20px;font-weight:normal;padding-bottom:5px;'>ODIF Report</h4></td>
+										</tr>
+										<tr>
+											<td colspan='10' style='border: 1px solid #ddd;'>
+												<table class='table' cellpadding='10' cellspacing='0' border='0' bgcolor='#ffffff' width='auto'>
+													<thead>
+														<tr>
+															<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>S. NO.</th>
+															<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>MEGA PROCESS</th>
+															<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>PROCESS</th>
+															<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>ACTIVITY</th>
+															<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>UOM</th>
+															<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>PLANNED QUANTITY</th>
+															<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>ACTUAL QUANTITY</th>
+															<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>START DATE</th>
+															<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>FINISH DATE</th>
+															<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>STATUS</th>
+															<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>COMMENTS</th>
+														</tr>
+													</thead>
+													<tbody>";
+			$sl = 0;
+			foreach ($odif as $value) {
+				$sl++;
+				if ($value['activity_status'] == 0) {
+					$status = '0';
+				} elseif ($value['activity_status'] == 1) {
+					$status = '0';
+				}
+				$message .= "<tr bgcolor='#f6f6f6'>
+								<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>" . $sl . "</td>
+								<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>" . $value['mp_name'] . "</td>
+								<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>" . $value['process_name'] . "</td>
+								<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>" . $value['activity_name'] . "</td>
+								<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>" . $value['uom'] . "</td>
+								<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>" . $value['planned_quantity'] . "</td>
+								<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>" . $value['actually_quantity'] . "</td>
+								<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>" . $value['start_date'] . "</td>
+								<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>" . $value['finish_date'] . "</td>
+								<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>" . $status . "</td>
+								<td  align='center'  style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>" . $value['comments'] . "</td>
+							</tr>";
+			}
+			$message .= "</tbody>
+						</table>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		</body>";
+			echo $message;
+			exit;
 		}
-	}	
 
-?>
+		function jobCardExcelDownload() {
+			$projectId = $this->input->get('projectid');
+			$odif = $this->odif_model->get_todays_odif($projectId);
+			$p_details = $this->projects_model->view_projects_details_id($projectId);
+			$user_details = $this->users_model->get_user_details_byemail($p_details['user_id']);
+			$powner = $this->projects_model->view_projects_details_id($projectId);
+			$currentDate = date('d-m-Y');
+			$count_of_activities = 0;
+		
+			foreach ($odif as $value) {
+				$pq = $value['planned_quantity'];
+				$aq = $value['actually_quantity'];
+				$taq = $value['temp_actual_quantity'];
+				$job_card_sql = "SELECT * FROM job_card WHERE activity_id='" . $value['activity_id'] . "'";
+				$job_card = $this->db->query($job_card_sql)->row();
+		
+				if ($job_card) {
+					$value['planned_quantity'] = $job_card->planned_quantity;
+					$value['actually_quantity'] = $job_card->actually_quantity;
+		
+					if ($value['planned_quantity'] <= 0) {
+						continue;
+					}
+				}
+		
+				$count_of_activities = $count_of_activities + 1;
+			}
+		
+			// Set headers for force download
+			header('Content-Type: application/pdf');
+			header('Content-Disposition: attachment;filename="jobcard.xls"');
+			header('Cache-Control: max-age=0');
+			header('Cache-Control: must-revalidate');
+			header('Pragma: public');
+			ob_start();
+		
+			$message .= "<link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800' rel='stylesheet'>
+				<body>
+					<style>
+						* {
+							font-family: 'Open Sans', sans-serif;
+							padding: 0;
+							margin: 0;
+						}
+					</style>
+					<table class='table' width='auto' border='0' cellpadding='0' cellspacing='0' bgcolor='#1d9f75'>
+						<tbody>
+							<tr>
+								<td align='center'>
+									<table class='table' cellpadding='10' cellspacing='10' width='auto' border='0'  bgcolor='#ffffff'>
+										<tbody>
+											<tr>
+												<td>Project Name:</td>
+												<td colspan='10'>" . $p_details['project_name'] . "</td>
+											</tr>
+											<tr>
+												<td>Project Owner:</td>
+												<td colspan='10'>" . $powner['name'] . "</td>
+											</tr>
+											<tr>
+												<td>Date</td>
+												<td colspan='10'>" . $currentDate . "</td>
+											</tr>
+											<tr>
+												<td>Total Activities: </td>
+												<td colspan='10' align='left'>" . $count_of_activities . "</td>
+											</tr>
+											
+											<tr>
+												<td>
+													<h4 style='border-bottom:1px solid #ccc;color:#1d9f75;font-size:20px;font-weight:normal;padding-bottom:5px;'>Job Card</h4>
+												</td>
+											</tr>
+											<tr>
+												<td  colspan='11' style='border: 1px solid #ddd;'>
+													<table class='table' cellpadding='10' cellspacing='0' border='0' bgcolor='#ffffff'>
+														<thead>
+															<tr>
+																<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>S. NO.</th>
+																<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>MEGA PROCESS</th>
+																<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>PROCESS</th>
+																<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>ACTIVITY</th>
+																<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>UOM</th>
+																<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>PLANNED QUANTITY</th>
+																<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>ACTUAL QUANTITY</th>
+																<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>START DATE</th>
+																<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>FINISH DATE</th>
+																<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>STATUS</th>
+																<th style='font-weight:600;font-size:13px;background:#445157;color:#fff;padding:5px;'>COMMENTS</th>
+															</tr>
+														</thead>
+														<tbody>";
+			$sl = 0;
+		
+			foreach ($odif as $value) {
+				$pq = $value['planned_quantity'];
+				$aq = $value['actually_quantity'];
+				$taq = $value['temp_actual_quantity'];
+				$job_card_sql = "SELECT * FROM job_card WHERE activity_id='" . $value['activity_id'] . "'";
+				$job_card = $this->db->query($job_card_sql)->row();
+		
+				if ($job_card) {
+					$value['planned_quantity'] = $job_card->planned_quantity;
+					$value['actually_quantity'] = $job_card->actually_quantity;
+		
+					if ($value['planned_quantity'] <= 0) {
+						continue;
+					}
+				}
+		
+				$sl++;
+		
+				if ($value['activity_status'] == 0) {
+					$status = '0';
+				} elseif ($value['activity_status'] == 1) {
+					$status = '0';
+				}
+		
+				$message .= "<tr bgcolor='#f6f6f6'>
+					<td align='center' style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>" . $sl . "</td>
+					<td align='center' style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>" . $value['mp_name'] . "</td>
+					<td align='center' style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>" . $value['process_name'] . "</td>
+					<td align='center' style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>" . $value['activity_name'] . "</td>
+					<td align='center' style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>" . $value['uom'] . "</td>
+					<td align='center' style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>" . $value['planned_quantity'] . "</td>
+					<td align='center' style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>" . $value['actually_quantity'] . "</td>
+					<td align='center' style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>" . $value['start_date'] . "</td>
+					<td align='center' style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>" . $value['finish_date'] . "</td>
+					<td align='center' style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>" . $status . "</td>
+					<td align='center' style='font-weight:400;font-size:12px;color:#5b6a6f;padding:2px;padding:5px;'>" . $value['comments'] . "</td>
+				</tr>";
+			}
+		
+			$message .= "</tbody>
+					</table>
+				</td>
+			</tr>
+			</tbody>
+			</table>
+			</body>";
+			echo $message;
+			exit;
+		}
+		
+	}

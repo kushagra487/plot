@@ -21,9 +21,34 @@ $query = $this->db->query($sql);
           width: 13%;
       }
   }
+  .but_approve, .but_reject {
+        display: inline-block;
+		margin:3px;
+		padding:0px 2px 0px 2px;	
+        color: #fff;
+        text-decoration: none;
+        border: none;
+        border-radius: 2px;
+        cursor: pointer;
+    }
+
+    .but_approve:hover {
+        background-color: #14735a;
+    }
+	.but_approve {
+		background-color: #1d9f75;
+	}
+	.but_reject {
+		background-color: #eb4034;
+	}
 </style>
 <div class="right_col" role="main">
-<h3 class="title text-uppercase"><?php echo $project_details['project_name']; ?> <img src="<?php echo base_url()?>project_uploads/<?php echo $project_details['project_logo']?>" style="width:50px;height:50px;"> </h3> 
+<h3 class="title text-uppercase"><?php echo $project_details['project_name']; ?> 
+<img src="<?php echo base_url()?>project_uploads/<?php echo $project_details['project_logo']?>" style="width:50px;height:50px;"> 
+<a href="<?php echo base_url();?>Add_project/approve_wbs_request/<?php echo $this->uri->segment('3');?>" class="but_approve">Approve</a>
+<a href="<?php echo base_url();?>Add_project/reject_wbs_request/<?php echo $this->uri->segment('3');?>"class="but_reject">Reject</a>
+</h3> 
+
 <div>
   <div class="clearfix"></div>
   <div class="">
@@ -297,6 +322,9 @@ li.ui-state-default:last-child{
     </div>
   </div>
 </div>
+
+<a href="<?php echo base_url();?>Add_project/approve_wbs_request/<?php echo $this->uri->segment('3');?>" class="but_approve">Approve</a>
+<a href="<?php echo base_url();?>Add_project/reject_wbs_request/<?php echo $this->uri->segment('3');?>"class="but_reject">Reject</a>
 
 <!-- Share -->
 <div class="modal fade" id="myModal_share" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

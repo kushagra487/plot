@@ -206,6 +206,16 @@
 }
 		
 		
-	
+public function check_reporting_manager($user_id){
+	//$this->db->distinct('project_id');
+	$this->db->select('*');
+	$this->db->from('project_mail_reports');
+	$this->db->where('reporting_manager', $user_id);
+	$this->db->where('reporting_status', '0');
+	$this->db->group_by('project_id');
+	$query = $this->db->get();
+	//echo $this->db->last_query();
+	return $query->result();
+	}
 	}
 ?>

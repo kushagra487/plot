@@ -55,6 +55,7 @@
 								'designation' => $_POST['designation'],
 								'password' => $_POST['password'],
 								'role' => $_POST['user_role'],
+								'reporting_manager' => $_POST['reporting_manager'],
 								'image' => $img_name
 							);
 							$exist_user_id = $_POST['user_id'];
@@ -100,6 +101,7 @@
 								'designation' => $_POST['designation'],
 								'password' => $_POST['password'],
 								'role' => $_POST['user_role'],
+								'reporting_manager' => $_POST['reporting_manager'],
 								'image' => $img_name
 							);
 							$exist_user_id = $_POST['user_id'];
@@ -145,6 +147,7 @@
 								'designation' => $_POST['designation'],
 								'password' => $_POST['password'],
 								'role' => $_POST['user_role'],
+								'reporting_manager' => $_POST['reporting_manager'],
 								'image' => $img_name
 							);
 							$exist_user_id = $_POST['user_id'];
@@ -240,6 +243,7 @@
 								'designation' => $_POST['designation'],
 								'password' => $_POST['password'],
 								'role' => $_POST['user_role'],
+								'reporting_manager' => $_POST['reporting_manager'],
 								'image' => $img_name
 							);
 							$get_id =  $this->uri->segment('3');
@@ -254,7 +258,8 @@
 							'name' => $_POST['name'],
 							'designation' => $_POST['designation'],
 							'password' => $_POST['password'],
-							'role' => $_POST['user_role']
+							'role' => $_POST['user_role'],
+							'reporting_manager' => $_POST['reporting_manager'],
 						);
 						$get_id =  $this->uri->segment('3');
 						$data['user_detail'] = $this->users_model->get_id_details($get_id);
@@ -293,6 +298,7 @@
 								'designation' => $_POST['designation'],
 								'password' => $_POST['password'],
 								'role' => $_POST['user_role'],
+								'reporting_manager' => $_POST['reporting_manager'],
 								'image' => $img_name
 							);
 							$get_id =  $this->uri->segment('3');
@@ -310,7 +316,8 @@
 							'name' => $_POST['name'],
 							'designation' => $_POST['designation'],
 							'password' => $_POST['password'],
-							'role' => $_POST['user_role']
+							'role' => $_POST['user_role'],
+							'reporting_manager' => $_POST['reporting_manager'],
 						);
 						$get_id =  $this->uri->segment('3');
 						$data['user_detail'] = $this->users_model->get_id_details($get_id);
@@ -352,6 +359,7 @@
 								'designation' => $_POST['designation'],
 								'password' => $_POST['password'],
 								'role' => $_POST['user_role'],
+								'reporting_manager' => $_POST['reporting_manager'],
 								'image' => $img_name
 							);
 							$get_id =  $this->uri->segment('3');
@@ -369,7 +377,8 @@
 							'name' => $_POST['name'],
 							'designation' => $_POST['designation'],
 							'password' => $_POST['password'],
-							'role' => $_POST['user_role']
+							'role' => $_POST['user_role'],
+							'reporting_manager' => $_POST['reporting_manager'],
 						);
 						$get_id =  $this->uri->segment('3');
 						$data['user_detail'] = $this->users_model->get_id_details($get_id);

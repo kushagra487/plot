@@ -205,6 +205,50 @@ $completed=ceil(($completed/$total_p)*100);
 </div>
 <!-- /page content -->
 
+ <!-- Modal -->
+ <div id="wbsApproval" class="modal" role="dialog">
+    <div class="modal-dialog" style='width:60%;'>
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Wbs Approval Request</h4>
+            </div>
+            <div class="modal-body">
+			
+				<table style='width:100%;'>
+				<thead>
+				<tr>
+					<th class="text-center">S No.</th>
+					<th class="text-center">Project Name</th>
+					<th class="text-center">User</th>
+					<th class="text-center">Action</th>
+				</tr>
+				</thead>
+				<tbody>
+					<?php 
+					$count='1';
+					foreach ($reporting_manager as $row) { ?>
+						<tr>
+							<td class="text-center"><?php echo $count; ?></td>
+							<td class="text-center"><?php echo $row->project_name; ?></td>
+							<td class="text-center"><?php echo $row->user; ?></td>
+							<td class="text-center">
+                <a href="<?php echo base_url();?>/wbs_list/index/<?php echo $row->project_id;?>" class="but_approve">View WBS</a>
+						</tr>
+					<?php
+					$count++;
+				} ?>
+				</tbody>
+			</table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default modal-close" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="<?php echo base_url();?>vendors/jquery/dist/jquery.min.js"></script>
 <script src="<?php echo  base_url();?>vendors/echart/echarts-all.js"></script>
 <script src="<?php echo  base_url();?>vendors/echart/green.js"></script>
@@ -214,6 +258,15 @@ $completed=ceil(($completed/$total_p)*100);
   <script>
   
   $(document).ready(function(){
+    // Display the modal when the page is loaded
+    <?php if($reporting_manager) { ?>
+    $('#wbsApproval').show();
+    <?php } ?>
+
+// Close the modal when the close button is clicked
+$('.modal-close').click(function() {
+  $('#wbsApproval').hide();
+});
 Chart.defaults.global.legend = {
       enabled: false
     };
@@ -456,7 +509,5 @@ alert(datevalue);*/
            
 
   });
-		
-	
 
  </script>

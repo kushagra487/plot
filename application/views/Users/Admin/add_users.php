@@ -1,3 +1,11 @@
+<?php
+
+$sql="SELECT user_id FROM login WHERE role IN ('Team Member', 'Project Manager')";
+$query = $this->db->query($sql);
+$pm_tm_data=$query->result();
+
+?>
+
 <!-- /page content -->
 <div class="right_col" role="main">
 	<div class="">
@@ -58,6 +66,26 @@
 									</select>
 								</div>
 							</div>
+							<!-- 20-nov code to assign reporting manager -->
+
+							<div class="form-group">
+								<label class="control-label col-md-3 col-sm-3 col-xs-12">Reporting Manager<span class="required" style="color:red !important;">*</span> </label>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+								<select class="form-control" name="reporting_manager">
+								<option value="">Select</option>
+									<?php
+									// Iterate through the array and generate options
+									foreach ($pm_tm_data as $pm_value) {
+										?>
+										<option value="<?php echo $pm_value->user_id;?>"><?php echo $pm_value->user_id;?></option>
+										<?php
+									}
+									?>
+								</select>
+								</div>
+							</div>
+
+							<!-- assign reporting manager code end -->
 							<div class="item form-group">
 								<label for="image" class="control-label col-md-3 col-sm-3 col-xs-12">Image <span class="required" style="color:red !important;">*</span></label>
 								<div class="col-md-6 col-sm-6 col-xs-12">

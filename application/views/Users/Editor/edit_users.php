@@ -1,3 +1,17 @@
+
+<?php
+
+$sql="SELECT user_id FROM login WHERE role IN ('Team Member', 'Project Manager')";
+$query = $this->db->query($sql);
+$pm_tm_data=$query->result();
+
+$user_id=$this->uri->segment(3);
+$sql2='select reporting_manager from login where id="'.$user_id.'"';
+$query2 = $this->db->query($sql2);
+$rm=$query2->result();
+$user_rm=$rm['0']->reporting_manager;
+
+?>
 <!-- /page content -->
 <div class="right_col" role="main">
 	<div class="">
@@ -56,6 +70,27 @@
 									</select>
 								</div>
 							</div>
+							
+							<!-- 20-nov code to assign reporting manager -->
+
+							<div class="form-group">
+								<label class="control-label col-md-3 col-sm-3 col-xs-12">Reporting Manager<span class="required" style="color:red !important;">*</span> </label>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+								<select class="form-control" name="reporting_manager">
+								<option value="">Select</option>
+									<?php
+									// Iterate through the array and generate options
+									foreach ($pm_tm_data as $pm_value) {
+										?>
+										<option value="<?php echo $pm_value->user_id;?>" <?php echo ($user_rm == $pm_value->user_id) ? 'selected' : ''; ?>><?php echo $pm_value->user_id;?></option>
+										<?php
+									}
+									?>
+								</select>
+								</div>
+							</div>
+
+							<!-- assign reporting manager code end -->
 							<div class="item form-group">
 								<label for="image" class="control-label col-md-3 col-sm-3 col-xs-12">Image </label>
 								<div class="col-md-6 col-sm-6 col-xs-12">

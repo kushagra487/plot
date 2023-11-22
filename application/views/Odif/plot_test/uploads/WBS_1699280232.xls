@@ -1,0 +1,802 @@
+
+<html xmlns:x="urn:schemas-microsoft-com:office:excel">
+
+<head>
+
+    <!--[if gte mso 9]>
+
+    <xml>
+
+        <x:ExcelWorkbook>
+
+            <x:ExcelWorksheets>
+
+                <x:ExcelWorksheet>
+
+                    <x:Name>Sheet 1</x:Name>
+
+                    <x:WorksheetOptions>
+
+                        <x:Print>
+
+                            <x:ValidPrinterInfo/>
+
+                        </x:Print>
+
+                    </x:WorksheetOptions>
+
+                </x:ExcelWorksheet>
+
+            </x:ExcelWorksheets>
+
+        </x:ExcelWorkbook>
+
+    </xml>
+
+    <![endif]-->
+
+    </head>
+
+<body>
+
+    <table width="100%" cellspacing="0" class="table2 table-bordered nowrap" id="datatable-keytable_wrapper">
+
+            
+
+		<thead>
+
+        <tr style="background-color:#1D9F75;color:#FFFFFF;">
+
+         <th class="cell12">Unique Code</th>
+
+        <th class="cell12">Mega Process</th>
+
+        
+        
+
+		<th class="cell13">Process</th>
+
+        
+        <th class="cell13">Activity
+
+        
+
+        </th>
+
+                <th class="cell13">Planned Quantity</th>
+		
+		<th class="cell13">Actual Quantity</th>
+		
+        <th class="cell13">Start Date</th>
+
+        <th class="cell13">Finish Date</th>
+
+        <th class="cell13">Assigned Person</th>
+
+        <th class="cell13">Resources</th>
+
+        <th> Dependency</th>
+
+        <th class="cell13">Template Reference</th>
+
+		</tr>
+
+         </thead>
+
+         <tbody>   
+
+            
+ 			<tr>
+
+            <td align="left">  1</td>
+
+      		<td align="left">
+
+            <!--<input type='textbox'  name='mega_process[18928]'  value='Personal Job card'>-->
+
+            
+
+            Personal Job card
+           
+
+            </td>
+
+            
+
+            
+            
+
+            <td></td>
+
+      		
+            
+
+            <td></td>
+
+            
+            <td>&nbsp;</td>
+
+           <td>&nbsp;</td>
+
+           <td>&nbsp;</td>
+
+           <td>&nbsp;</td>
+
+           <td>&nbsp;</td>
+
+           <td>&nbsp;</td>
+
+			</tr>
+
+      
+
+<tr><td align='left'>1.1</td><td>&nbsp;</td><td  align='left'>Pellet Plant -2</td></tr><tr><td  align='left'>1.1.1</td><td></td><td></td><td  align='left'>Weekly WBS preparation training</td><td  align='left'>0</td>
+			
+			<td  align='left'>0</td>
+			
+			<td  align='left'>03-11-2023 00:00:00</td>
+
+			<td  align='left'>03-11-2023 00:00:00 
+
+			</td><td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'>1</td>
+
+			</tr><tr><td  align='left'>1.1.2</td><td></td><td></td><td  align='left'>WBS mapping</td><td  align='left'>0</td>
+			
+			<td  align='left'>0</td>
+			
+			<td  align='left'>03-11-2023 00:00:00</td>
+
+			<td  align='left'>03-11-2023 00:00:00 
+
+			</td><td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'>0</td>
+
+			</tr><tr><td  align='left'>1.1.3</td><td></td><td></td><td  align='left'>Job card follow up</td><td  align='left'>0</td>
+			
+			<td  align='left'>0</td>
+			
+			<td  align='left'>03-11-2023 00:00:00</td>
+
+			<td  align='left'>03-11-2023 00:00:00 
+
+			</td><td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'>0</td>
+
+			</tr><tr><td  align='left'>1.1.4</td><td></td><td></td><td  align='left'>ODIF performance comparison</td><td  align='left'>0</td>
+			
+			<td  align='left'>0</td>
+			
+			<td  align='left'>03-11-2023 00:00:00</td>
+
+			<td  align='left'>03-11-2023 00:00:00 
+
+			</td><td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'>0</td>
+
+			</tr><tr><td  align='left'>1.1.5</td><td></td><td></td><td  align='left'>Procurement follow up</td><td  align='left'>0</td>
+			
+			<td  align='left'>0</td>
+			
+			<td  align='left'>03-11-2023 00:00:00</td>
+
+			<td  align='left'>03-11-2023 00:00:00 
+
+			</td><td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'>0</td>
+
+			</tr><tr><td  align='left'>1.1.6</td><td></td><td></td><td  align='left'>drawings follow up</td><td  align='left'>0</td>
+			
+			<td  align='left'>0</td>
+			
+			<td  align='left'>03-11-2023 00:00:00</td>
+
+			<td  align='left'>03-11-2023 00:00:00 
+
+			</td><td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'>0</td>
+
+			</tr><tr><td  align='left'>1.1.7</td><td></td><td></td><td  align='left'>Scrum meeting</td><td  align='left'>0</td>
+			
+			<td  align='left'>0</td>
+			
+			<td  align='left'>03-11-2023 00:00:00</td>
+
+			<td  align='left'>03-11-2023 00:00:00 
+
+			</td><td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'>0</td>
+
+			</tr><tr><td  align='left'>1.1.8</td><td></td><td></td><td  align='left'>Weekly WBS preparation training</td><td  align='left'>0</td>
+			
+			<td  align='left'>0</td>
+			
+			<td  align='left'>04-11-2023 00:00:00</td>
+
+			<td  align='left'>04-11-2023 00:00:00 
+
+			</td><td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'>0</td>
+
+			</tr><tr><td  align='left'>1.1.9</td><td></td><td></td><td  align='left'>WBS mapping</td><td  align='left'>0</td>
+			
+			<td  align='left'>0</td>
+			
+			<td  align='left'>04-11-2023 00:00:00</td>
+
+			<td  align='left'>04-11-2023 00:00:00 
+
+			</td><td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'>0</td>
+
+			</tr><tr><td  align='left'>1.1.10</td><td></td><td></td><td  align='left'>Job card follow up</td><td  align='left'>0</td>
+			
+			<td  align='left'>0</td>
+			
+			<td  align='left'>04-11-2023 00:00:00</td>
+
+			<td  align='left'>04-11-2023 00:00:00 
+
+			</td><td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'>0</td>
+
+			</tr><tr><td  align='left'>1.1.11</td><td></td><td></td><td  align='left'>ODIF performance comparison</td><td  align='left'>0</td>
+			
+			<td  align='left'>0</td>
+			
+			<td  align='left'>04-11-2023 00:00:00</td>
+
+			<td  align='left'>04-11-2023 00:00:00 
+
+			</td><td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'>0</td>
+
+			</tr><tr><td  align='left'>1.1.12</td><td></td><td></td><td  align='left'>Procurement follow up</td><td  align='left'>0</td>
+			
+			<td  align='left'>0</td>
+			
+			<td  align='left'>04-11-2023 00:00:00</td>
+
+			<td  align='left'>04-11-2023 00:00:00 
+
+			</td><td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'>0</td>
+
+			</tr><tr><td  align='left'>1.1.13</td><td></td><td></td><td  align='left'>drawings follow up</td><td  align='left'>0</td>
+			
+			<td  align='left'>0</td>
+			
+			<td  align='left'>04-11-2023 00:00:00</td>
+
+			<td  align='left'>04-11-2023 00:00:00 
+
+			</td><td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'>0</td>
+
+			</tr><tr><td  align='left'>1.1.14</td><td></td><td></td><td  align='left'>Scrum meeting</td><td  align='left'>0</td>
+			
+			<td  align='left'>0</td>
+			
+			<td  align='left'>04-11-2023 00:00:00</td>
+
+			<td  align='left'>04-11-2023 00:00:00 
+
+			</td><td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'>0</td>
+
+			</tr><tr><td  align='left'>1.1.15</td><td></td><td></td><td  align='left'>Weekly WBS preparation training</td><td  align='left'>0</td>
+			
+			<td  align='left'>0</td>
+			
+			<td  align='left'>06-11-2023 00:00:00</td>
+
+			<td  align='left'>06-11-2023 00:00:00 
+
+			</td><td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'>0</td>
+
+			</tr><tr><td  align='left'>1.1.16</td><td></td><td></td><td  align='left'>WBS mapping</td><td  align='left'>0</td>
+			
+			<td  align='left'>0</td>
+			
+			<td  align='left'>06-11-2023 00:00:00</td>
+
+			<td  align='left'>06-11-2023 00:00:00 
+
+			</td><td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'>0</td>
+
+			</tr><tr><td  align='left'>1.1.17</td><td></td><td></td><td  align='left'>Job card follow up</td><td  align='left'>0</td>
+			
+			<td  align='left'>0</td>
+			
+			<td  align='left'>06-11-2023 00:00:00</td>
+
+			<td  align='left'>06-11-2023 00:00:00 
+
+			</td><td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'>0</td>
+
+			</tr><tr><td  align='left'>1.1.18</td><td></td><td></td><td  align='left'>ODIF performance comparison</td><td  align='left'>0</td>
+			
+			<td  align='left'>0</td>
+			
+			<td  align='left'>06-11-2023 00:00:00</td>
+
+			<td  align='left'>06-11-2023 00:00:00 
+
+			</td><td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'>0</td>
+
+			</tr><tr><td  align='left'>1.1.19</td><td></td><td></td><td  align='left'>Procurement follow up</td><td  align='left'>0</td>
+			
+			<td  align='left'>0</td>
+			
+			<td  align='left'>06-11-2023 00:00:00</td>
+
+			<td  align='left'>06-11-2023 00:00:00 
+
+			</td><td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'>0</td>
+
+			</tr><tr><td  align='left'>1.1.20</td><td></td><td></td><td  align='left'>drawings follow up</td><td  align='left'>0</td>
+			
+			<td  align='left'>0</td>
+			
+			<td  align='left'>06-11-2023 00:00:00</td>
+
+			<td  align='left'>06-11-2023 00:00:00 
+
+			</td><td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'>0</td>
+
+			</tr><tr><td  align='left'>1.1.21</td><td></td><td></td><td  align='left'>Scrum meeting</td><td  align='left'>0</td>
+			
+			<td  align='left'>0</td>
+			
+			<td  align='left'>06-11-2023 00:00:00</td>
+
+			<td  align='left'>06-11-2023 00:00:00 
+
+			</td><td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'>0</td>
+
+			</tr><tr><td align='left'>1.2</td><td>&nbsp;</td><td  align='left'>PLOT</td></tr><tr><td  align='left'>1.2.1</td><td></td><td></td><td  align='left'>New development meeting with logzero team</td><td  align='left'>0</td>
+			
+			<td  align='left'>0</td>
+			
+			<td  align='left'>03-11-2023 00:00:00</td>
+
+			<td  align='left'>03-11-2023 00:00:00 
+
+			</td><td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'>0</td>
+
+			</tr><tr><td  align='left'>1.2.2</td><td></td><td></td><td  align='left'>Testing of any transport if done</td><td  align='left'>0</td>
+			
+			<td  align='left'>0</td>
+			
+			<td  align='left'>03-11-2023 00:00:00</td>
+
+			<td  align='left'>03-11-2023 00:00:00 
+
+			</td><td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'>0</td>
+
+			</tr><tr><td  align='left'>1.2.3</td><td></td><td></td><td  align='left'>Addressing issues of all users to log zero team</td><td  align='left'>0</td>
+			
+			<td  align='left'>0</td>
+			
+			<td  align='left'>03-11-2023 00:00:00</td>
+
+			<td  align='left'>03-11-2023 00:00:00 
+
+			</td><td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'>0</td>
+
+			</tr><tr><td  align='left'>1.2.4</td><td></td><td></td><td  align='left'>Discussion of issues with users to provide the right solution to log zero team</td><td  align='left'>0</td>
+			
+			<td  align='left'>0</td>
+			
+			<td  align='left'>03-11-2023 00:00:00</td>
+
+			<td  align='left'>03-11-2023 00:00:00 
+
+			</td><td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'>0</td>
+
+			</tr><tr><td  align='left'>1.2.5</td><td></td><td></td><td  align='left'>New development meeting with logzero team</td><td  align='left'>0</td>
+			
+			<td  align='left'>0</td>
+			
+			<td  align='left'>04-11-2023 00:00:00</td>
+
+			<td  align='left'>04-11-2023 00:00:00 
+
+			</td><td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'>0</td>
+
+			</tr><tr><td  align='left'>1.2.6</td><td></td><td></td><td  align='left'>Testing of any transport if done</td><td  align='left'>0</td>
+			
+			<td  align='left'>0</td>
+			
+			<td  align='left'>04-11-2023 00:00:00</td>
+
+			<td  align='left'>04-11-2023 00:00:00 
+
+			</td><td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'>0</td>
+
+			</tr><tr><td  align='left'>1.2.7</td><td></td><td></td><td  align='left'>Addressing issues of all users to log zero team</td><td  align='left'>0</td>
+			
+			<td  align='left'>0</td>
+			
+			<td  align='left'>04-11-2023 00:00:00</td>
+
+			<td  align='left'>04-11-2023 00:00:00 
+
+			</td><td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'>0</td>
+
+			</tr><tr><td  align='left'>1.2.8</td><td></td><td></td><td  align='left'>Discussion of issues with users to provide the right solution to log zero team</td><td  align='left'>0</td>
+			
+			<td  align='left'>0</td>
+			
+			<td  align='left'>04-11-2023 00:00:00</td>
+
+			<td  align='left'>04-11-2023 00:00:00 
+
+			</td><td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'>0</td>
+
+			</tr><tr><td  align='left'>1.2.9</td><td></td><td></td><td  align='left'>New development meeting with logzero team</td><td  align='left'>0</td>
+			
+			<td  align='left'>0</td>
+			
+			<td  align='left'>06-11-2023 00:00:00</td>
+
+			<td  align='left'>06-11-2023 00:00:00 
+
+			</td><td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'>0</td>
+
+			</tr><tr><td  align='left'>1.2.10</td><td></td><td></td><td  align='left'>Testing of any transport if done</td><td  align='left'>0</td>
+			
+			<td  align='left'>0</td>
+			
+			<td  align='left'>06-11-2023 00:00:00</td>
+
+			<td  align='left'>06-11-2023 00:00:00 
+
+			</td><td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'>0</td>
+
+			</tr><tr><td  align='left'>1.2.11</td><td></td><td></td><td  align='left'>Addressing issues of all users to log zero team</td><td  align='left'>0</td>
+			
+			<td  align='left'>0</td>
+			
+			<td  align='left'>06-11-2023 00:00:00</td>
+
+			<td  align='left'>06-11-2023 00:00:00 
+
+			</td><td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'>0</td>
+
+			</tr><tr><td  align='left'>1.2.12</td><td></td><td></td><td  align='left'>Discussion of issues with users to provide the right solution to log zero team</td><td  align='left'>0</td>
+			
+			<td  align='left'>0</td>
+			
+			<td  align='left'>06-11-2023 00:00:00</td>
+
+			<td  align='left'>06-11-2023 00:00:00 
+
+			</td><td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'></td>
+
+			<td  align='left'>0</td>
+
+			</tr>
+
+
+			</tbody>
+
+			</table>
+
+            </body></html>
+
+    

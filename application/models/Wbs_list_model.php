@@ -1329,21 +1329,27 @@ public function tree_process_edit($id,$mp_id ,$indent=1,$projectid) {
 
 
 
+			$date = explode(' ',$row_activity['start_date']);
+			   
+			if($date[0] <= date('d/m/Y')){
+				$disabled = '';
+			} else {
+				$disabled = '';
+			}
+
+
+
+			echo "<td><input type='text' value='" . $row_activity['uom'] . "' class=''  name='uom[]'  ".$disabled."></td>
+			<td><input type='text' value='" . $row_activity['planned_quantity'] . "' class=''  name='planned_quantity[]' ".$disabled."></td>
 			
-
-
-
-			echo "<td><input type='text' value='" . $row_activity['uom'] . "' class=''  name='uom[]' ></td>
-			<td><input type='text' value='" . $row_activity['planned_quantity'] . "' class=''  name='planned_quantity[]' ></td>
-			
-			<td><input type='text' value='" . $row_activity['actually_quantity'] . "' class=''  name='actually_quantity[]' ></td>
+			<td><input type='text' value='" . $row_activity['actually_quantity'] . "' class=''  name='actually_quantity[]' ".$disabled."></td>
 			
 			
-			<td><input type='text' value='" . $row_activity['start_date'] . "' class='stdate' placeholder='dd/mm/YYYY'  name='start_date[]' ></td>
+			<td><input type='text' value='" . $row_activity['start_date'] . "' class='stdate' placeholder='dd/mm/YYYY'  name='start_date[]' ".$disabled."></td>
 
 
 
-			<td><input type='text' value='" . $row_activity['finish_date'] . "' class='endate' name='end_date[]' placeholder='dd/mm/YYYY' ></td>
+			<td><input type='text' value='" . $row_activity['finish_date'] . "' class='endate' name='end_date[]' placeholder='dd/mm/YYYY' ".$disabled."></td>
 
 
 
@@ -1351,7 +1357,7 @@ public function tree_process_edit($id,$mp_id ,$indent=1,$projectid) {
 
 
 
-			<select class='form-control assign_person' tabindex='-1' name='responsibilities[]'>
+			<select class='form-control assign_person' tabindex='-1' name='responsibilities[]' ".$disabled.">
 
 
 
@@ -1449,7 +1455,7 @@ public function tree_process_edit($id,$mp_id ,$indent=1,$projectid) {
 
 
 
-			<td><input type='textbox'  name='resources[]' value='" . $row_activity['resources'] . "'></td>
+			<td><input type='textbox'  name='resources[]' value='" . $row_activity['resources'] . "' ".$disabled."></td>
 
 
 
@@ -1457,7 +1463,7 @@ public function tree_process_edit($id,$mp_id ,$indent=1,$projectid) {
 
 
 
-			<select class='form-control' tabindex='-1' name='dependency[]'>
+			<select class='form-control' tabindex='-1' name='dependency[]' ".$disabled.">
 
 
 
@@ -1533,7 +1539,7 @@ public function tree_process_edit($id,$mp_id ,$indent=1,$projectid) {
 
 
 
-			<td><input type='textbox'  name='template_reference[]' value='" . $row_activity['template_reference'] . "'></td>";
+			<td><input type='textbox'  name='template_reference[]' value='" . $row_activity['template_reference'] . "' ".$disabled."></td>";
 
 
 
@@ -1609,7 +1615,7 @@ public function tree_process_edit($id,$mp_id ,$indent=1,$projectid) {
 
 
 
-			echo "<td><span><input type='hidden' name='previous_document[]' value='".$row_activity['template_document']."'>";
+			echo "<td><span><input type='hidden' name='previous_document[]' value='".$row_activity['template_document']."' ".$disabled.">";
 
 
 
@@ -1617,7 +1623,7 @@ public function tree_process_edit($id,$mp_id ,$indent=1,$projectid) {
 
 
 
-			echo "<input type='file'  name='template_document[]'><span><a href='".base_url()."template_document/".$row_activity['project_id']."/".$row_activity['template_document']."' target='_blank' style='display:block'><i class='fa ".$file_class." fa-6' aria-hidden='true' style='display:block'></i><span>".$row_activity['template_document']."</span></a>
+			echo "<input type='file'  name='template_document[]' ".$disabled."><span><a href='".base_url()."template_document/".$row_activity['project_id']."/".$row_activity['template_document']."' target='_blank' style='display:block'><i class='fa ".$file_class." fa-6' aria-hidden='true' style='display:block'></i><span>".$row_activity['template_document']."</span></a>
 
 
 
@@ -1637,11 +1643,11 @@ public function tree_process_edit($id,$mp_id ,$indent=1,$projectid) {
 
 
 
-			echo "<td><input type='hidden' name='previous_document[]' value=''>
+			echo "<td><input type='hidden' name='previous_document[]' value='' ".$disabled.">
 
 
 
-			<input type='file'  name='template_document[]'></td>";
+			<input type='file'  name='template_document[]' ".$disabled."></td>";
 
 
 
@@ -1657,7 +1663,7 @@ public function tree_process_edit($id,$mp_id ,$indent=1,$projectid) {
 
 
 
-			 <input type='text' name='activity_status[]' value='".$row_activity['activity_status']."' readonly>
+			 <input type='text' name='activity_status[]' value='".$row_activity['activity_status']."' readonly ".$disabled.">
 
 
 

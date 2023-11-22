@@ -1,13 +1,41 @@
 <?php 
+//print_r($reporting_manager);die;
+if(!empty($reporting_manager)){
+	$style='';
+	//echo "test";die;
+}else{
+	$style='display:none';
+	//echo "test2";die;
+}
 //print_r($this->session->userdata['user_id']);
-$role = $this->session->userdata['role']; ?>
-
+$role = $this->session->userdata['role']; 
+$user_id=$this->session->userdata['user_id'];
+//echo $user_id;die;
+?>
+<style>
+	.d-flex.justify-content-between.align-items-center {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.title_bar{
+	margin: 0;
+    border-bottom: 2px solid #22313f;
+    padding: 20px 0;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    font-size: 2.4rem;
+}
+</style>
 <div id="preloader">
 	<div id="status">&nbsp;</div>
 </div>
 <div class="right_col" role="main">
 	<section>
-		<h3 class="title text-uppercase">My project</h3>
+		<div class="d-flex title_bar justify-content-between align-items-center">
+		<h3 class="text-uppercase">My project</h3>
+		
+		</div>
           <?php if($role=="Project Manager" || $role=="Admin" || $role=="Team Member"){?>
         <div class="curve_btn red_btn text-right">
         <a href="<?php echo base_url()?>add_project/add_new_project">Add New</a>
@@ -192,9 +220,30 @@ $role = $this->session->userdata['role']; ?>
     </div>
 
   </div>
-</div>  
-                   
-                    
+</div>
+
+<style>
+    .but_approve, .but_reject {
+        display: inline-block;
+		margin:3px;
+		padding:0px 2px 0px 2px;	
+        color: #fff;
+        text-decoration: none;
+        border: none;
+        border-radius: 2px;
+        cursor: pointer;
+    }
+
+    .but_approve:hover {
+        background-color: #14735a;
+    }
+	.but_approve {
+		background-color: #1d9f75;
+	}
+	.but_reject {
+		background-color: #eb4034;
+	}
+</style>                   
 <?php
 	$i = 1;
 	foreach($project_details as $key => $value){

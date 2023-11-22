@@ -82,11 +82,33 @@
     </div>
   </div>   
 
+  <script src="<?= base_url();?>vendors/jquery/dist/jquery.min.js"></script>
 <script src="<?= base_url();?>vendors/bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="<?= base_url();?>vendors/iCheck/icheck.min.js"></script>-->
 <script src="<?= base_url();?>js/moment/moment.min.js"></script>
 <script src="<?= base_url();?>js/datepicker/daterangepicker.js"></script>
 <script src="<?= base_url();?>build/js/custom.js"></script>
+
+<?php if($datediff > 0) { ?>
+<script>
+	var total_complete_activity =  $('#total_complete_activity').val();
+	var sum_total_activity =  $('#sum_total_activity').val();
+ // var per = '<?php //echo $total_complete_activity."/".$sum_total_activity;?>';
+	var per  = total_complete_activity+'/'+sum_total_activity;
+	//var score = "<?php //$cal = round(($total_complete_activity/$sum_total_activity)*100); ?><?php //echo number_format($cal, 2)."%"; ?>";
+	
+	let cal = 0;
+	if (sum_total_activity !== 0) {
+		cal = (total_complete_activity / sum_total_activity) * 100;
+	}
+	let score = cal.toFixed(2) + "%";	
+  $(document).ready(function(){
+    console.log(<?php echo $total_complete_activity; ?>);
+    $('.performance').html(per);
+    $('.score').html(score);
+  });
+</script>
+<?php } ?>
 <script>
 $('[data-toggle="tooltip"]').tooltip();
 </script>
@@ -593,7 +615,7 @@ $('#myModal').on('shown.bs.modal', function () {
 		   });
 		   
 		   $('button[name="btn_save"]').click(function(e){
-			document.getElementById('is_wbs_submitted').value   =0;    
+			document.getElementById('is_wbs_submitted').value   =1;    
 			   
 			   
 		   });
@@ -695,6 +717,7 @@ $('#myModal').on('shown.bs.modal', function () {
 								
 						if(Sarea=='Select ' || stdate=='' || endate==''){
 							var re = /^\d{2}\/\d{2}\/\d{4}$/;
+							var redatetime = /^\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}:\d{2}$/;
 							if ($.trim($(ActivityArea).val())) {
 							//$(ActivityArea).parent().parent().find('.assign_person').addClass('mandatory');
 							if(Sarea=='Select '){
@@ -704,13 +727,13 @@ $('#myModal').on('shown.bs.modal', function () {
 							if(stdate==''){
 								
 							$(this).find('.stdate').addClass('error');
-							}else if(stdate!='' && !stdate.match(re)){
+							}else if(stdate!='' && !(stdate.match(redatetime) || stdate.match(re))){
 								
 							$(this).find('.stdate').addClass('error');
 							}
 							if(endate==''){
 								$(this).find('.endate').addClass('error');
-							}else if(endate!='' && !endate.match(re)){
+							}else if(endate!='' && !(endate.match(redatetime) || endate.match(re))){
 								$(this).find('.endate').addClass('error');
 							}
 							haserror = true;
@@ -724,13 +747,14 @@ $('#myModal').on('shown.bs.modal', function () {
 							 
 						}else if(stdate!='' || endate!=''){
 							var re = /^\d{2}\/\d{2}\/\d{4}$/;
+							var redatetime = /^\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}:\d{2}$/;
 							if ($.trim($(ActivityArea).val())) {
-								if(stdate!='' && !stdate.match(re)){
+								if(stdate!='' && !(stdate.match(redatetime) || stdate.match(re))){
 								//alert(1);
 								$(this).find('.stdate').addClass('error');
 								haserror = true;
 								}
-								else if(endate!='' && !endate.match(re)){
+								else if(endate!='' && !(endate.match(redatetime) || endate.match(re))){
 									//alert(2);
 								$(this).find('.endate').addClass('error');
 								haserror = true;
