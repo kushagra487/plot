@@ -609,7 +609,7 @@ $('#myModal').on('shown.bs.modal', function () {
      </script>
            <script>	 
 		   
-		   $('button[name="btn_submit"]').click(function(e){
+		   $('button[name="btn_save"]').click(function(e){
 			   
 			document.getElementById('is_wbs_submitted').value  =1; 
 		   });
@@ -619,7 +619,7 @@ $('#myModal').on('shown.bs.modal', function () {
 			   
 			   
 		   });
-		   $('button[name="btn_submit"]').click(function(e){
+		   $('button[name="btn_save"]').click(function(e){
 			  
 			
 			 hasError1 = false;
@@ -1331,6 +1331,8 @@ $(".increment").on('click',function(){
 			$newRow.find('input[type="hidden"]').val('');
 			$newRow.find('input.dateselect').val('');
 			//$newRow.find('input.stdate').removeClass('hasDatepicker').removeData('datepicker').unbind().datetimepicker({ format: 'DD/MM/YYYY HH:mm:ss' });
+			$newRow.find('input').removeAttr('readonly');
+			$newRow.find('input.stdate').removeAttr('readonly');
 			emptySetRowCell();
 			setRowCell();
 			Emptyclonliness();

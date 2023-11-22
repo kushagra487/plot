@@ -1,5 +1,13 @@
 <?php 
+//print_r($reporting_manager);die;
 ini_set("memory_limit","1000M");
+if(!empty($reporting_manager)){
+	$style='';
+	//echo "test";die;
+}else{
+	$style='display:none';
+	//echo "test2";die;
+}
 $role = $this->session->userdata['role']; 
 $project_id=$this->uri->segment('3');
 $powner=$this->projects_model->view_projects_details_id($this->uri->segment('3'));
@@ -45,8 +53,9 @@ $query = $this->db->query($sql);
 <div class="right_col" role="main">
 <h3 class="title text-uppercase"><?php echo $project_details['project_name']; ?> 
 <img src="<?php echo base_url()?>project_uploads/<?php echo $project_details['project_logo']?>" style="width:50px;height:50px;"> 
+<span style=<?php echo $style;?>>
 <a href="<?php echo base_url();?>Add_project/approve_wbs_request/<?php echo $this->uri->segment('3');?>" class="but_approve">Approve</a>
-<a href="<?php echo base_url();?>Add_project/reject_wbs_request/<?php echo $this->uri->segment('3');?>"class="but_reject">Reject</a>
+<a href="<?php echo base_url();?>Add_project/reject_wbs_request/<?php echo $this->uri->segment('3');?>"class="but_reject">Reject</a></span>
 </h3> 
 
 <div>
@@ -322,9 +331,10 @@ li.ui-state-default:last-child{
     </div>
   </div>
 </div>
-
+<span style=<?php echo $style;?>>
 <a href="<?php echo base_url();?>Add_project/approve_wbs_request/<?php echo $this->uri->segment('3');?>" class="but_approve">Approve</a>
 <a href="<?php echo base_url();?>Add_project/reject_wbs_request/<?php echo $this->uri->segment('3');?>"class="but_reject">Reject</a>
+</span>
 
 <!-- Share -->
 <div class="modal fade" id="myModal_share" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

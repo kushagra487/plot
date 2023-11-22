@@ -1332,7 +1332,7 @@ public function tree_process_edit($id,$mp_id ,$indent=1,$projectid) {
 			$date = explode(' ',$row_activity['start_date']);
 			   
 			if($date[0] <= date('d/m/Y')){
-				$disabled = '';
+				$disabled = 'readonly';
 			} else {
 				$disabled = '';
 			}

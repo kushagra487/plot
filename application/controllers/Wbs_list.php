@@ -580,7 +580,8 @@ If you do not wish to receive any further communications, please unsubscrddibe h
 
 				if($role == 'Admin'){
 
-						
+					$reporting_manager=$this->projects_model->confirm_reporting_manager($user_id,$get_id);
+					$data['reporting_manager']=$reporting_manager;
 
 					$data['wbs_data']=$this->wbs_list_model->get_wbs_data($this->uri->segment('3'));
 
@@ -599,6 +600,8 @@ If you do not wish to receive any further communications, please unsubscrddibe h
 					$this->load->view('footer');
 
 				}elseif($role == 'Editor'){
+					$reporting_manager=$this->projects_model->confirm_reporting_manager($user_id,$get_id);
+					$data['reporting_manager']=$reporting_manager;
 
 					$data['wbs_data']=$this->wbs_list_model->get_wbs_data($this->uri->segment('3'));
 
@@ -617,6 +620,8 @@ If you do not wish to receive any further communications, please unsubscrddibe h
 					$this->load->view('footer');
 
 				}elseif($role == 'Project Manager'){
+					$reporting_manager=$this->projects_model->confirm_reporting_manager($user_id,$get_id);
+					$data['reporting_manager']=$reporting_manager;
 
 					$data['wbs_data']=$this->wbs_list_model->get_wbs_data($this->uri->segment('3'));
 
@@ -632,6 +637,8 @@ If you do not wish to receive any further communications, please unsubscrddibe h
 					$this->load->view('footer');
 
 				}elseif($role == 'Team Member'){
+					$reporting_manager=$this->projects_model->confirm_reporting_manager($user_id,$get_id);
+					$data['reporting_manager']=$reporting_manager;
 
 					$data['wbs_data']=$this->wbs_list_model->get_wbs_data($this->uri->segment('3'));
 
